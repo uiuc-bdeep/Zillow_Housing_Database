@@ -17,3 +17,4 @@ Finally, to convert to csv files, use psql command:
 ```
 COPY <tablename> TO '<csv filename>' DELIMITER ',' CSV HEADER;
 ```
+Note that user postgres does not have permission to access (and save files at) `/home/ubuntu`. To get around, save files into `/tmp/` and then move to the desired location.
