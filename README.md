@@ -5,11 +5,11 @@ The first script converts txt file into database. For example, if you want to co
 ```
 python3 zillow_txt_to_database.py 01
 ```
-Next, you can use the second script to convert the output from the above to the final hedonics ready for csv conversion. If you still want the raw data, use:
+Next, you can use the second script to convert **the output from the above** to the final hedonics ready for csv conversion. If you still want the raw data, use:
 ```
 python3 zillow_extract_hedonics.py 01
 ```
-Otherwise, if raw data is going to be deleted, add `delete` prompt at the end:
+Otherwise, if the **output from the first script** is longer needed, add `delete` prompt at the end. This will delete the files created by the first script at last:
 ```
 python3 zillow_extract_hedonics.py 01 delete
 ```
