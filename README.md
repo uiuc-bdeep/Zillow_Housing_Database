@@ -13,8 +13,9 @@ Otherwise, if the **output from the first script** is longer needed, add `delete
 ```
 python3 zillow_extract_hedonics.py 01 delete
 ```
-Finally, to convert to csv files, use psql command:
+Finally, to convert to readable tables, psql has a built-in function to convert to csv files:
 ```
 COPY <tablename> TO '<csv filename>' DELIMITER ',' CSV HEADER;
 ```
 Note that user postgres does not have permission to access (and save files at) `/home/ubuntu`. To get around, save files into `/tmp/` and then move to the desired location.
+Otherwise, if rds files are preferred, relate to `get_from_db.R` for details.
