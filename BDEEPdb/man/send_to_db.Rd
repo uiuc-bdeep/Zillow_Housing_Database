@@ -2,12 +2,11 @@
 % Please edit documentation in R/database_R_data_transfer.R
 \name{send_to_db}
 \alias{send_to_db}
-\title{send_to_db
-This function sends the given table to the database.}
+\title{send_to_db}
 \usage{
 send_to_db(df, table_name, schema_name = "public",
   database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
-  usr = "postgres", pwd = "bdeep", action = "create")
+  action = "create")
 }
 \arguments{
 \item{df}{The actual data frame to send to the database}
@@ -20,19 +19,18 @@ send_to_db(df, table_name, schema_name = "public",
 
 \item{host_ip}{A string indicating the ip address of the database VM}
 
-\item{usr}{A string indicating the user who can get access to the database on that VM}
-
-\item{pwd}{A string of the password to the database (instead of the user mentioned above)}
-
 \item{action}{String in {"create", "append", "overwrite"}. "Create" only creates a new table when
 no table with same name is available. "Append" appends the given table to the existing
 one, and creates a new table if not existing. "Overwrite" overwrites the original table
 if existing, and creates a new table if not. Default to "create".}
+
+\item{usr}{A string indicating the user who can get access to the database on that VM}
+
+\item{pwd}{A string of the password to the database (instead of the user mentioned above)}
 }
 \value{
 TRUE on success, FALSE otherwise
 }
 \description{
-send_to_db
 This function sends the given table to the database.
 }

@@ -2,12 +2,11 @@
 % Please edit documentation in R/database_R_data_transfer.R
 \name{get_from_db}
 \alias{get_from_db}
-\title{get_from_db
-This function gets a list of data.frames from the database.}
+\title{get_from_db}
 \usage{
 get_from_db(states_abbr, columns = "*", max_num_recs = -1,
   database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
-  usr = "postgres", pwd = "bdeep", schema_name = "hedonics_new")
+  schema_name = "hedonics_new", append = FALSE)
 }
 \arguments{
 \item{states_abbr}{A vector of states abbreviation}
@@ -21,17 +20,18 @@ get_from_db(states_abbr, columns = "*", max_num_recs = -1,
 
 \item{host_ip}{A string indicating the ip address of the database VM}
 
+\item{schema_name}{A string containing the schema name in the database}
+
+\item{append}{If append is true, return a single data.frame with rows appended.}
+
 \item{usr}{A string indicating the user who can get access to the database on that VM}
 
 \item{pwd}{A string of the password to the database (instead of the user mentioned above)}
-
-\item{schema_name}{A string containing the schema name in the database}
 }
 \value{
 If input is a single state, return a single data.frame. If input is a vector, return a list
         of data.frames, in the same order of that in states_abbr.
 }
 \description{
-get_from_db
 This function gets a list of data.frames from the database.
 }

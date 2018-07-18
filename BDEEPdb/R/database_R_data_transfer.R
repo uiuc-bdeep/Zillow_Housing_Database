@@ -2,7 +2,7 @@
 # For more information about package PostgreSQL, see https://cran.r-project.org/web/packages/RPostgreSQL/RPostgreSQL.pdf
 
 #' get_from_db
-#' This function gets a list of data.frames from the database.
+#' @description This function gets a list of data.frames from the database.
 #' @param states_abbr   A vector of states abbreviation
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
 #' @param max_num_recs  An integer indicating the maximum number of records to select,
@@ -12,12 +12,15 @@
 #' @param usr           A string indicating the user who can get access to the database on that VM
 #' @param pwd           A string of the password to the database (instead of the user mentioned above)
 #' @param schema_name   A string containing the schema name in the database
+#' @param append        If append is true, return a single data.frame with rows appended.
 #' @return If input is a single state, return a single data.frame. If input is a vector, return a list
 #'         of data.frames, in the same order of that in states_abbr.
 #' @import RPostgreSQL DBI
 #' @export
 get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
-                        host_ip="141.142.209.139", usr="postgres", pwd="bdeep", schema_name="hedonics_new"){
+                        host_ip="141.142.209.139", schema_name="hedonics_new", append=FALSE){
+  # Make sure states_abbr are lower cased
+  states_abbr <- tolower(states_abbr)
   # Gets database driver, assuming PostgreSQL database
   drv <- DBI::dbDriver("PostgreSQL")
   # Creates a connection to the postgres database
@@ -26,8 +29,8 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
                                 dbname = database_name,
                                 host = host_ip,
                                 port = 5432,
-                                user = usr,
-                                password = pwd)
+                                user = "postgres",
+                                password = "bdeep")
   # Get input length
   len <- length(states_abbr)
   # Create returned list
@@ -67,14 +70,16 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
   print("Finished!")
   if(len==1){
     return(hedonics[[1]])
-  } else {
+  } else if(append){
+    return(do.call("rbind", hedonics))
+  } else{
     return(hedonics)
   }
 }
 
 
 #' send_to_db
-#' This function sends the given table to the database.
+#' @description This function sends the given table to the database.
 #' @param df            The actual data frame to send to the database
 #' @param table_name    The table in the database to send to.
 #' @param schema_name   The schema in the database to send to. Default to public schema.
@@ -89,8 +94,8 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
 #' @return TRUE on success, FALSE otherwise
 #' @import RPostgreSQL DBI
 #' @export
-send_to_db <- function(df, table_name, schema_name="public", database_name="zillow_2017_nov", host_ip="141.142.209.139",
-                       usr="postgres", pwd="bdeep", action="create"){
+send_to_db <- function(df, table_name, schema_name="public", database_name="zillow_2017_nov",
+                       host_ip="141.142.209.139", action="create"){
   # Assert that action is valid
   if(!action %in% c("create", "append", "overwrite")){
     print("Action must be one of create, append, or overwrite")
@@ -106,8 +111,8 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
                                 dbname = database_name,
                                 host = host_ip,
                                 port = 5432,
-                                user = usr,
-                                password = pwd)
+                                user = "postgres",
+                                password = "bdeep")
   # Check whether table exists
   if(!RPostgreSQL::dbExistsTable(con, c(schema_name, table_name))){
     # if not, create one anyway
