@@ -2,3 +2,5 @@
 
 export(get_from_db)
 export(send_to_db)
+import(DBI)
+import(RPostgreSQL)

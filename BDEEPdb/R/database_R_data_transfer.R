@@ -14,6 +14,7 @@
 #' @param schema_name   A string containing the schema name in the database
 #' @return If input is a single state, return a single data.frame. If input is a vector, return a list
 #'         of data.frames, in the same order of that in states_abbr.
+#' @import RPostgreSQL DBI
 #' @export
 get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
                         host_ip="141.142.209.139", usr="postgres", pwd="bdeep", schema_name="hedonics_new"){
@@ -86,6 +87,7 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
 #'                      one, and creates a new table if not existing. "Overwrite" overwrites the original table
 #'                      if existing, and creates a new table if not. Default to "create".
 #' @return TRUE on success, FALSE otherwise
+#' @import RPostgreSQL DBI
 #' @export
 send_to_db <- function(df, table_name, schema_name="public", database_name="zillow_2017_nov", host_ip="141.142.209.139",
                        usr="postgres", pwd="bdeep", action="create"){
