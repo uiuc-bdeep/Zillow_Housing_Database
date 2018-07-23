@@ -6,7 +6,7 @@
 \usage{
 get_from_db(states_abbr, columns = "*", max_num_recs = -1,
   database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
-  schema_name = "hedonics_new", append = FALSE)
+  append = FALSE)
 }
 \arguments{
 \item{states_abbr}{A vector of states abbreviation}
@@ -20,13 +20,7 @@ get_from_db(states_abbr, columns = "*", max_num_recs = -1,
 
 \item{host_ip}{A string indicating the ip address of the database VM}
 
-\item{schema_name}{A string containing the schema name in the database}
-
 \item{append}{If append is true, return a single data.frame with rows appended.}
-
-\item{usr}{A string indicating the user who can get access to the database on that VM}
-
-\item{pwd}{A string of the password to the database (instead of the user mentioned above)}
 }
 \value{
 If input is a single state, return a single data.frame. If input is a vector, return a list

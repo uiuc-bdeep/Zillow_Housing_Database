@@ -23,10 +23,6 @@ send_to_db(df, table_name, schema_name = "public",
 no table with same name is available. "Append" appends the given table to the existing
 one, and creates a new table if not existing. "Overwrite" overwrites the original table
 if existing, and creates a new table if not. Default to "create".}
-
-\item{usr}{A string indicating the user who can get access to the database on that VM}
-
-\item{pwd}{A string of the password to the database (instead of the user mentioned above)}
 }
 \value{
 TRUE on success, FALSE otherwise
