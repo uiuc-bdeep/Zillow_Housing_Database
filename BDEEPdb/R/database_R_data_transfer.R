@@ -53,9 +53,9 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
                                                            " FROM hedonics_new.",
                                                            state,
                                                            "_hedonics_new",
-                                                           "FETCH FIRST ",
+                                                           " FETCH FIRST ",
                                                            max_num_recs,
-                                                           " ONLY"))
+                                                           " ROWS ONLY"))
     }
     # Garbage collection
     gc()
