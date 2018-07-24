@@ -84,7 +84,7 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
 get_from_db_state_county <- function(state_county, columns="*", database_name="zillow_2017_nov",
                                      host_ip="141.142.209.139"){
   # Check valid input
-  if(nrows(state_county)==0 || ncols(states_county)!=2 || any(nchar(state_county[,1])!=2)){
+  if(nrow(state_county)==0 || ncol(state_county)!=2 || any(nchar(as.character(state_county[,1]))!=2)){
     print("Invalid argument!")
     return(NULL)
   }
