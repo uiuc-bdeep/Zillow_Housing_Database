@@ -4,28 +4,30 @@
 \alias{get_from_db}
 \title{get_from_db}
 \usage{
-get_from_db(states_abbr, columns = "*", max_num_recs = -1,
-  database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
-  append = FALSE)
+get_from_db(spec, arg, columns = "*", database_name = "zillow_2017_nov",
+  host_ip = "141.142.209.139", user = FALSE)
 }
 \arguments{
-\item{states_abbr}{A vector of states abbreviation}
+\item{spec}{A single string indicating which column (field) to specify.}
+
+\item{arg}{A dataframe indicating how to specify.}
 
 \item{columns}{A vector of column names to export. Default to all columns (i.e. "*").}
-
-\item{max_num_recs}{An integer indicating the maximum number of records to select,
--1 indicating all (by default)}
 
 \item{database_name}{A string indicating the database name}
 
 \item{host_ip}{A string indicating the ip address of the database VM}
 
-\item{append}{If append is true, return a single data.frame with rows appended.}
+\item{user}{If TRUE, the function regards arg as the given query sent to database.
+Note that user-defined query should be used whenever two specifications
+are present.}
 }
 \value{
-If input is a single state, return a single data.frame. If input is a vector, return a list
-        of data.frames, in the same order of that in states_abbr.
+A data.frame including all data from the given specs.
 }
 \description{
-This function gets a list of data.frames from the database.
+This function is a wrapper for all get_from_db method. By specifying its arguments,
+             it calls different functions in the script. The specification can be either previously
+             recorded fields, or user-defined queries. It returns a data.frame including all data
+             specified.
 }

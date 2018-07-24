@@ -1,7 +1,7 @@
 # This file contains functions for data transfer between R and PostgreSQL database: get_from_db & send_to_db
 # For more information about package PostgreSQL, see https://cran.r-project.org/web/packages/RPostgreSQL/RPostgreSQL.pdf
 
-#' get_from_db
+#' get_from_db_state
 #' @description This function gets a list of data.frames from the database.
 #' @param states_abbr   A vector of states abbreviation
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
@@ -14,8 +14,8 @@
 #'         of data.frames, in the same order of that in states_abbr.
 #' @import RPostgreSQL DBI
 #' @export
-get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
-                        host_ip="141.142.209.139", append=FALSE){
+get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
+                              host_ip="141.142.209.139", append=TRUE){
   # Make sure states_abbr are lower cased
   states_abbr <- tolower(states_abbr)
   # Gets database driver, assuming PostgreSQL database
@@ -48,12 +48,14 @@ get_from_db <- function(states_abbr, columns="*", max_num_recs=-1, database_name
                                                            state,
                                                            "_hedonics_new"))
     } else {
-      print("Not yet implemented!")
-      # Close the connection
-      RPostgreSQL::dbDisconnect(con)
-      RPostgreSQL::dbUnloadDriver(drv)
-      # Exit
-      return(NULL)
+      hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
+                                                           paste(columns, collapse = ","),
+                                                           " FROM hedonics_new.",
+                                                           state,
+                                                           "_hedonics_new",
+                                                           "FETCH FIRST ",
+                                                           max_num_recs,
+                                                           " ONLY"))
     }
     # Garbage collection
     gc()
@@ -130,11 +132,107 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
 #' @export
 get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
                              host_ip="141.142.209.139"){
-  sc <- get_state_county(fips)
+  sc <- get_state_county(fips)[, c("state","county")]
   return(get_from_db_state_county(sc,
                                   columns=columns,
                                   database_name=database_name,
                                   host_ip=host_ip))
+}
+
+#' get_from_db_usr
+#' @description This function gets from database according to a user-specified query.
+#' @param query         A string specifying the query sent to database
+#' @param database_name A string indicating the database name
+#' @param host_ip       A string indicating the ip address of the database VM
+#' @return A data.frame returned by the given query.
+#' @import RPostgreSQL DBI
+#' @export
+get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141.142.209.139"){
+  # Only one query at a time is supported
+  if(length(query)>1){
+    print("Only one query at a time is supported!")
+    return(NULL)
+  }
+  # Initialize connection
+  drv <- DBI::dbDriver("PostgreSQL")
+  con <- RPostgreSQL::dbConnect(drv,
+                                dbname = database_name,
+                                host = host_ip,
+                                port = 5432,
+                                user = "postgres",
+                                password = "bdeep")
+  # Get data
+  hedonics <- RPostgreSQL::dbGetQuery(con, query)
+  gc()
+  # Close the connection
+  RPostgreSQL::dbDisconnect(con)
+  RPostgreSQL::dbUnloadDriver(drv)
+  return(hedonics)
+}
+
+#' get_from_db
+#' @description This function is a wrapper for all get_from_db method. By specifying its arguments,
+#'              it calls different functions in the script. The specification can be either previously
+#'              recorded fields, or user-defined queries. It returns a data.frame including all data
+#'              specified.
+#' @param spec          A single string indicating which column (field) to specify.
+#' @param arg           A dataframe indicating how to specify.
+#' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
+#' @param database_name A string indicating the database name
+#' @param host_ip       A string indicating the ip address of the database VM
+#' @param user          If TRUE, the function regards arg as the given query sent to database.
+#'                      Note that user-defined query should be used whenever two specifications
+#'                      are present.
+#' @example
+#' @return A data.frame including all data from the given specs.
+#' @import RPostgreSQL DBI
+#' @export
+get_from_db <- function(spec, arg, columns="*", database_name="zillow_2017_nov",
+                        host_ip="141.142.209.139", user=FALSE){
+  # Not implemented!
+  return(NULL)
+  # if(!user){
+  #   # Make sure spec is valid
+  # 
+  #   # Construct query
+  #   query <- construct_query(spec, arg, columns)
+  # } else {
+  #   # User-defined query
+  #   query <- arg
+  # }
+  # 
+  # # Get data from database
+  # # Initialize connection
+  # drv <- DBI::dbDriver("PostgreSQL")
+  # con <- RPostgreSQL::dbConnect(drv,
+  #                               dbname = database_name,
+  #                               host = host_ip,
+  #                               port = 5432,
+  #                               user = "postgres",
+  #                               password = "bdeep")
+  # # Process queries sequentially
+  # hedonics <- RPostgreSQL::dbGetQuery(con, query[1])
+  # for(i in 2:length(query))
+  #   hedonics <- rbind(RPostgreSQL::dbGetQuery(con, query[i]), hedonics)
+  # # Close the connection
+  # RPostgreSQL::dbDisconnect(con)
+  # RPostgreSQL::dbUnloadDriver(drv)
+  # # Finished!
+  # return(hedonics)
+}
+
+construct_query <- function(spec, arg, columns){
+  # paste("SELECT",
+  #       paste(columns, collapse = ","),
+  #       "FROM",
+  #       paste0("hedonics_new.", "_hedonics_new"),
+  #       "WHERE",
+  #       spec,
+  #       "=",
+  #       )
+  # # Switch to cases
+  # if(spec=="state")
+
 }
 
 #' send_to_db
@@ -192,30 +290,4 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
   RPostgreSQL::dbUnloadDriver(drv)
   # Return
   return(res)
-}
-
-####################################### Helper Functions below ####################################
-#' get_state_county
-#' @description This function convert a vector of fips to corresponding state-county pairs
-#' @param fips A vector of fips numbers stored as TEXT (characters)
-#' @return A data.frame with first column as state abbreviation and second column as county name,
-#'         all in lower case.
-#' @export
-get_state_county <- function(fips){
-  ret <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("state", "county"))
-  for (n in fips){
-    # Ensure correct format
-    if(nchar(n)!=5 || n < "01001" || n > "56045"){
-      print(paste("FIPS code invalid format:", n))
-      next
-    }
-    # Find row
-    r <- county_state_fips[which(county_state_fips$fips == n), ]
-    if(nrow(r)!=1){
-      print(paste("FIPS code not found:", n))
-    }
-    # Append
-    ret <- rbind(ret, data.frame(state=r$st_abbr, county=r$ct_name))
-  }
-  return(ret)
 }

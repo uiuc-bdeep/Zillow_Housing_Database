@@ -2,7 +2,9 @@
 
 export(get_from_db)
 export(get_from_db_fips)
+export(get_from_db_state)
 export(get_from_db_state_county)
+export(get_from_db_usr)
 export(get_state_county)
 export(send_to_db)
 import(DBI)

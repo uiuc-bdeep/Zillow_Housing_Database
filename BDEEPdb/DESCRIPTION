@@ -1,6 +1,6 @@
 Package: BDEEPdb
 Title: R-Psqldb Connection @ BDEEP
-Version: 0.0.0.9016
+Version: 0.0.0.9017
 Authors@R: person("Yuchen", "Liang", email = "yliang35@illinois.edu", role = c("aut", "cre"))
 Description: This package builds up the connection between the database and R program for data processing.
 Depends: R (>= 3.4.4)
