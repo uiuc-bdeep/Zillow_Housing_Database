@@ -202,6 +202,7 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
 #'         all in lower case.
 #' @export
 get_state_county <- function(fips){
+  data("county_state_fips")
   ret <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("state", "county"))
   for (n in fips){
     # Ensure correct format
@@ -217,5 +218,6 @@ get_state_county <- function(fips){
     # Append
     ret <- rbind(ret, data.frame(state=r$st_abbr, county=r$ct_name))
   }
+  rm("county_state_fips", envir=globalenv())
   return(ret)
 }
