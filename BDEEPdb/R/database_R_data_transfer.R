@@ -202,8 +202,7 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
 #'         all in lower case.
 #' @export
 get_state_county <- function(fips){
-  county_state_fips <- data(county_state_fips)
-  print(county_state_fips)
+  data(county_state_fips)
   ret <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("state", "county"))
   for (n in fips){
     # Ensure correct format
