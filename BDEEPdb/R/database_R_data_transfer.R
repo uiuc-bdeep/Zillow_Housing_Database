@@ -99,7 +99,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                 user = "postgres",
                                 password = "bdeep")
   # Process state-county sequentially
-  for(i in 1:nrows(state_county)){
+  for(i in 1:nrow(state_county)){
     r <- state_county[i, ]
     hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                          paste(columns, collapse = ","),
