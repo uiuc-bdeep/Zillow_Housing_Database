@@ -141,9 +141,8 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
-#' @examples
-#'         data <- get_from_db_fips("10001")
-#'         data <- get_from_db_fips(c("01001","06015"))
+#' @examples data <- get_from_db_fips("10001")
+#'           data <- get_from_db_fips(c("01001","06015"))
 #' @return A data.frame including all data from the given fips.
 #' @import RPostgreSQL DBI
 #' @export
