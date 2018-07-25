@@ -12,11 +12,10 @@
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
-#' @examples
-#'         data <- get_from_db_state("sd")
-#'         data <- get_from_db_state(c("sd","NE"), append=FALSE)
-#'         data <- get_from_db_state("ca",columns=c("rowid","transid"))
-#'         data <- get_from_db_state("sd",max_num_recs=100)
+#' @examples  data <- get_from_db_state("sd")
+#'            data <- get_from_db_state(c("sd","NE"), append=FALSE)
+#'            data <- get_from_db_state("ca",columns=c("rowid","transid"))
+#'            data <- get_from_db_state("sd",max_num_recs=100)
 #' @return If input is a single state, return a single data.frame. If input is a vector, return a list
 #'         of data.frames, in the same order of that in states_abbr.
 #' @import RPostgreSQL DBI
@@ -111,7 +110,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                 password = "bdeep")
   # Process state-county sequentially
   for(i in 1:nrow(state_county)){
-    print(paste("Processing state", toupper(state_county[i, 1], ), "county", state_county[i, 2]))
+    print(paste("Processing state", toupper(state_county[i, 1]), "county", state_county[i, 2]))
     hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                          paste(columns, collapse = ","),
                                                          " FROM hedonics_new.",
