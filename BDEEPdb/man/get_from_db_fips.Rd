@@ -5,7 +5,7 @@
 \title{get_from_db_fips}
 \usage{
 get_from_db_fips(fips, columns = "*", database_name = "zillow_2017_nov",
-  host_ip = "141.142.209.139")
+  host_ip = "141.142.209.139", append = TRUE)
 }
 \arguments{
 \item{fips}{A vector of fips}
@@ -15,6 +15,9 @@ get_from_db_fips(fips, columns = "*", database_name = "zillow_2017_nov",
 \item{database_name}{A string indicating the database name}
 
 \item{host_ip}{A string indicating the ip address of the database VM}
+
+\item{append}{If append is true, return a single data.frame with rows appended, otherwise a
+list of data.frames from each state.}
 }
 \value{
 A data.frame including all data from the given fips.
@@ -22,4 +25,8 @@ A data.frame including all data from the given fips.
 \description{
 This function gets a data.frame including all data from the given fips. Use previous
              function.
+}
+\examples{
+        data <- get_from_db_fips("10001")
+        data <- get_from_db_fips(c("01001","06015"))
 }
