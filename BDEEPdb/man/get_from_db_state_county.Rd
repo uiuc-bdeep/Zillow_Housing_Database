@@ -26,3 +26,7 @@ A data.frame including all data from the given state and county
 \description{
 This function gets a data.frame including all data from the given state abbr. and county.
 }
+\examples{
+table <- get_state_county("01001")[, c("state","county")]
+data <- get_from_db_state_county(table)
+}

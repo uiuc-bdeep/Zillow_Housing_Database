@@ -8,7 +8,7 @@
 #'
 #' @keywords fips
 #'
-#' @references \href{www.mdreducation.com/pdfs/US_FIPS_Codes.xls}
+#' @references \url{www.mdreducation.com/pdfs/US_FIPS_Codes.xls}
 "county_state_fips"
 
 #' get_state_county

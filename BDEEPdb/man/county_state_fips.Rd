@@ -13,6 +13,6 @@ data(county_state_fips)
 county_state_fips
 }
 \references{
-\href{www.mdreducation.com/pdfs/US_FIPS_Codes.xls}
+\url{www.mdreducation.com/pdfs/US_FIPS_Codes.xls}
 }
 \keyword{fips}

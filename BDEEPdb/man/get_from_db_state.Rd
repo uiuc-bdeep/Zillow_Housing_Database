@@ -24,16 +24,17 @@ get_from_db_state(states_abbr, columns = "*", max_num_recs = -1,
 list of data.frames from each state.}
 }
 \value{
-If input is a single state, return a single data.frame. If input is a vector, return a list
-        of data.frames, in the same order of that in states_abbr.
+If input is a single state, return a single data.frame. If input is a vector and append = F,
+        return a list of data.frames, in the same order of that in states_abbr, otherwise the result
+        is appended into one whole data.frame.
 }
 \description{
 This function gets a list of data.frames from the database, according to the given
              states (through abbreviation).
 }
 \examples{
-        data <- get_from_db_state("sd")
-        data <- get_from_db_state(c("sd","NE"), append=FALSE)
-        data <- get_from_db_state("ca",columns=c("rowid","transid"))
-        data <- get_from_db_state("sd",max_num_recs=100)
+ data <- get_from_db_state("sd")
+ data <- get_from_db_state(c("sD","Ne"), append=FALSE)
+ data <- get_from_db_state("ca",columns=c("rowid","transid"))
+ data <- get_from_db_state("sd",max_num_recs=100)
 }

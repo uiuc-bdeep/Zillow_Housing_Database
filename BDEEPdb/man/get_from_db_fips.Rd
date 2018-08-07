@@ -27,6 +27,6 @@ This function gets a data.frame including all data from the given fips. Use prev
              function.
 }
 \examples{
-        data <- get_from_db_fips("10001")
-        data <- get_from_db_fips(c("01001","06015"))
+data <- get_from_db_fips("10001")
+data <- get_from_db_fips(c("01001","17019"))
 }

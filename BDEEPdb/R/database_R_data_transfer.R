@@ -13,11 +13,12 @@
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
 #' @examples  data <- get_from_db_state("sd")
-#'            data <- get_from_db_state(c("sd","NE"), append=FALSE)
-#'            data <- get_from_db_state("ca",columns=c("rowid","transid"))
-#'            data <- get_from_db_state("sd",max_num_recs=100)
-#' @return If input is a single state, return a single data.frame. If input is a vector, return a list
-#'         of data.frames, in the same order of that in states_abbr.
+#' @examples  data <- get_from_db_state(c("sD","Ne"), append=FALSE)
+#' @examples  data <- get_from_db_state("ca",columns=c("rowid","transid"))
+#' @examples  data <- get_from_db_state("sd",max_num_recs=100)
+#' @return If input is a single state, return a single data.frame. If input is a vector and append = F,
+#'         return a list of data.frames, in the same order of that in states_abbr, otherwise the result
+#'         is appended into one whole data.frame.
 #' @import RPostgreSQL DBI
 #' @export
 get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
@@ -88,6 +89,8 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
+#' @examples table <- get_state_county("01001")[, c("state","county")]
+#' @examples data <- get_from_db_state_county(table)
 #' @return A data.frame including all data from the given state and county
 #' @import RPostgreSQL DBI
 #' @export
@@ -95,7 +98,8 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                      host_ip="141.142.209.139", append=TRUE){
   # Check valid input
   if(nrow(state_county)==0 || ncol(state_county)!=2 || any(nchar(as.character(state_county[,1]))!=2)){
-    print("Invalid argument!")
+    print("Invalid argument! Please input variable state_county as followed:")
+    print(get_state_county("01001")[, c("state","county")])
     return(NULL)
   }
   # Initialize list for return
@@ -142,7 +146,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
 #' @examples data <- get_from_db_fips("10001")
-#'           data <- get_from_db_fips(c("01001","06015"))
+#' @examples data <- get_from_db_fips(c("01001","17019"))
 #' @return A data.frame including all data from the given fips.
 #' @import RPostgreSQL DBI
 #' @export
@@ -161,6 +165,7 @@ get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
 #' @param query         A string specifying the query sent to database
 #' @param database_name A string indicating the database name
 #' @param host_ip       A string indicating the ip address of the database VM
+#' @examples data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
 #' @return A data.frame returned by the given query.
 #' @import RPostgreSQL DBI
 #' @export
@@ -185,70 +190,6 @@ get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
   return(hedonics)
-}
-
-#' get_from_db
-#' @description This function is a wrapper for all get_from_db method. By specifying its arguments,
-#'              it calls different functions in the script. The specification can be either previously
-#'              recorded fields, or user-defined queries. It returns a data.frame including all data
-#'              specified.
-#' @param spec          A single string indicating which column (field) to specify.
-#' @param arg           A dataframe indicating how to specify.
-#' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
-#' @param database_name A string indicating the database name
-#' @param host_ip       A string indicating the ip address of the database VM
-#' @param user          If TRUE, the function regards arg as the given query sent to database.
-#'                      Note that user-defined query should be used whenever two specifications
-#'                      are present.
-#' @return A data.frame including all data from the given specs.
-#' @import RPostgreSQL DBI
-get_from_db <- function(spec, arg, columns="*", database_name="zillow_2017_nov",
-                        host_ip="141.142.209.139", user=FALSE){
-  # Not implemented!
-  print("Not Implemented!")
-  return(NULL)
-  # if(!user){
-  #   # Make sure spec is valid
-  # 
-  #   # Construct query
-  #   query <- construct_query(spec, arg, columns)
-  # } else {
-  #   # User-defined query
-  #   query <- arg
-  # }
-  # 
-  # # Get data from database
-  # # Initialize connection
-  # drv <- DBI::dbDriver("PostgreSQL")
-  # con <- RPostgreSQL::dbConnect(drv,
-  #                               dbname = database_name,
-  #                               host = host_ip,
-  #                               port = 5432,
-  #                               user = "postgres",
-  #                               password = "bdeep")
-  # # Process queries sequentially
-  # hedonics <- RPostgreSQL::dbGetQuery(con, query[1])
-  # for(i in 2:length(query))
-  #   hedonics <- rbind(RPostgreSQL::dbGetQuery(con, query[i]), hedonics)
-  # # Close the connection
-  # RPostgreSQL::dbDisconnect(con)
-  # RPostgreSQL::dbUnloadDriver(drv)
-  # # Finished!
-  # return(hedonics)
-}
-
-construct_query <- function(spec, arg, columns){
-  # paste("SELECT",
-  #       paste(columns, collapse = ","),
-  #       "FROM",
-  #       paste0("hedonics_new.", "_hedonics_new"),
-  #       "WHERE",
-  #       spec,
-  #       "=",
-  #       )
-  # # Switch to cases
-  # if(spec=="state")
-
 }
 
 #' send_to_db

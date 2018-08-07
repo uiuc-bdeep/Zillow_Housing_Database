@@ -20,3 +20,6 @@ A data.frame returned by the given query.
 \description{
 This function gets from database according to a user-specified query.
 }
+\examples{
+data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
+}
