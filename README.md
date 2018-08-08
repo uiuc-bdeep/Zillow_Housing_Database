@@ -2,10 +2,15 @@
 
 Basic pipeline:
                             ------------                                                
+                            
                             \          /                                                
+                            
     Input                    \        /                                                 
+    
      Raw        --------->    Postgres   --------->     R      --------->    (Further   
+     
      File       --------->    Database   --------->    Data    --------->     Processing
+     
 (txt, csv, ...)                                                               ...)      
 
 ## TXT -> Postgres Database
