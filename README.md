@@ -17,6 +17,8 @@ Basic pipeline:
 python3 zillow_txt_to_database.py 01
 ```
 
+(Reference Only) The [store_BnB.py](./store_BnB.py) is placed here for reference. (Because I have a hard time finding it in the shared drive...)
+
 ## In-database Generation
 Next, you can use [zillow_extract_hedonics.py](./zillow_extract_hedonics.py) to convert **the output from the above** to the final hedonics ready for csv conversion. If you still want the raw data, use:
 ```
