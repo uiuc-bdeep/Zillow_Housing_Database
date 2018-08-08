@@ -47,6 +47,6 @@ Note that user postgres does not have permission to access (and save files at) `
 This method is a bit messy. The maximum transfer file size is somewhere between 17-22 GB for this VM with 64GB RAM.
 
 ## File Reference in Nebula
-- All scripts: `share/projects/Zillow_Housing/scripts/Generate/<script_name>`
-- CSV hedonics files: `share/projects/Zillow_Housing/stores/Hedonics/new_csv_hedonics_by_states/<state>_hedonics.csv`
-- RDS hedonics files (except CA): `projects/Zillow_Housing/stores/Hedonics/rds_hedonics_by_states/<state>_hedonics.rds`
+- All scripts: `/projects/Zillow_Housing/scripts/Generate/<script_name>`
+- CSV hedonics files: `/projects/Zillow_Housing/stores/Hedonics/new_csv_hedonics_by_states/<state>_hedonics.csv`
+- RDS hedonics files (except CA): `/projects/Zillow_Housing/stores/Hedonics/rds_hedonics_by_states/<state>_hedonics.rds`
