@@ -1,5 +1,9 @@
 # Zillow_Housing_Database Overview
 
+Basic pipeline:
+
+Input Raw File (txt, csv, ...) ---------> Postgres Database ----------> R Files ------------> ...
+
 ## TXT -> Postgres Database
 [zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. For example, if you want to convert for state AL (state code 01):
 ```
