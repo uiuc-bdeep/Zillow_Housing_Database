@@ -21,5 +21,21 @@ A data.frame returned by the given query.
 This function gets from database according to a user-specified query.
 }
 \examples{
+# Select single field from a given table
 data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
+ 
+# Select multiple fields from a given table
+data <- get_from_db_usr("SELECT loadid, transid FROM hedonics_new.sd_hedonics_new")
+ 
+# Select limited rows from a given table
+data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new limit 10")
+ 
+# Select multiple fields, with extra constraints on rows, from a given table
+data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
+ 
+# Get the number of records (rows) in a given table
+get_from_db_usr("SELECT count(*) FROM hedonics_new.sd_hedonics_new")
+ 
+# Get the range of a specific field
+get_from_db_usr("SELECT min(propertyaddresslatitude), max(propertyaddresslatitude) FROM hedonics_new.sd_hedonics_new")
 }

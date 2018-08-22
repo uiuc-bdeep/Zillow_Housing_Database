@@ -165,7 +165,23 @@ get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
 #' @param query         A string specifying the query sent to database
 #' @param database_name A string indicating the database name
 #' @param host_ip       A string indicating the ip address of the database VM
+#' @examples # Select single field from a given table
 #' @examples data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
+#' @examples  
+#' @examples # Select multiple fields from a given table
+#' @examples data <- get_from_db_usr("SELECT loadid, transid FROM hedonics_new.sd_hedonics_new")
+#' @examples  
+#' @examples # Select limited rows from a given table
+#' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new limit 10")
+#' @examples  
+#' @examples # Select specific rows from a given table
+#' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
+#' @examples  
+#' @examples # Get the number of records (rows) in a given table
+#' @examples get_from_db_usr("SELECT count(*) FROM hedonics_new.sd_hedonics_new")
+#' @examples  
+#' @examples # Get the range of a specific field
+#' @examples get_from_db_usr("SELECT min(propertyaddresslatitude), max(propertyaddresslatitude) FROM hedonics_new.sd_hedonics_new")
 #' @return A data.frame returned by the given query.
 #' @import RPostgreSQL DBI
 #' @export
