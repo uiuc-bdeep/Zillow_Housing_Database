@@ -30,8 +30,11 @@ data <- get_from_db_usr("SELECT loadid, transid FROM hedonics_new.sd_hedonics_ne
 # Select limited rows from a given table
 data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new limit 10")
  
-# Select multiple fields, with extra constraints on rows, from a given table
-data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
+# Select a 'bounding box' from a given table
+data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
+ 
+# Select from a list for a column (columns) in a given table
+get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE county IN ('BEADLE', 'UNION')")
  
 # Get the number of records (rows) in a given table
 get_from_db_usr("SELECT count(*) FROM hedonics_new.sd_hedonics_new")

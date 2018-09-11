@@ -174,8 +174,11 @@ get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
 #' @examples # Select limited rows from a given table
 #' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new limit 10")
 #' @examples  
-#' @examples # Select specific rows from a given table
+#' @examples # Select a 'bounding box' from a given table
 #' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
+#' @examples  
+#' @examples # Select from a list for a column (columns) in a given table
+#' @examples get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE county IN ('BEADLE', 'UNION')")
 #' @examples  
 #' @examples # Get the number of records (rows) in a given table
 #' @examples get_from_db_usr("SELECT count(*) FROM hedonics_new.sd_hedonics_new")
