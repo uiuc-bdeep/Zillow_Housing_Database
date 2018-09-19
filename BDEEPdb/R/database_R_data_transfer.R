@@ -48,22 +48,26 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
       next
     }
     print(paste("Processing State:", state))
+    options(warn = -1)    # suppress warning messages
     if(max_num_recs < 0){
-      hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
-                                                           paste(columns, collapse = ","),
-                                                           " FROM hedonics_new.",
-                                                           state,
-                                                           "_hedonics_new"))
+      hedonics[[i]] <- RPostgreSQL::dbGetQuery(con,
+                                               paste0("SELECT ",
+                                                      paste(columns, collapse = ","),
+                                                      " FROM hedonics_new.",
+                                                      state,
+                                                      "_hedonics_new"))
     } else {
-      hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
-                                                           paste(columns, collapse = ","),
-                                                           " FROM hedonics_new.",
-                                                           state,
-                                                           "_hedonics_new",
-                                                           " FETCH FIRST ",
-                                                           max_num_recs,
-                                                           " ROWS ONLY"))
+      hedonics[[i]] <- RPostgreSQL::dbGetQuery(con,
+                                               paste0("SELECT ",
+                                                     paste(columns, collapse = ","),
+                                                     " FROM hedonics_new.",
+                                                     state,
+                                                     "_hedonics_new",
+                                                     " FETCH FIRST ",
+                                                     max_num_recs,
+                                                     " ROWS ONLY"))
     }
+    options(warn = 0)
     # Garbage collection
     gc()
   }
@@ -113,6 +117,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                 user = "postgres",
                                 password = "bdeep")
   # Process state-county sequentially
+  options(warn = -1)    # suppress warning messages
   for(i in 1:nrow(state_county)){
     print(paste("Processing state", toupper(state_county[i, 1]), "county", state_county[i, 2]))
     hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
@@ -124,6 +129,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                                          "'"))
     gc()
   }
+  options(warn = 0)
   # Close the connection
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
@@ -203,7 +209,9 @@ get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141
                                 user = "postgres",
                                 password = "bdeep")
   # Get data
+  options(warn = -1)    # suppress warning messages
   hedonics <- RPostgreSQL::dbGetQuery(con, query)
+  options(warn = 0)
   gc()
   # Close the connection
   RPostgreSQL::dbDisconnect(con)
@@ -266,4 +274,48 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
   RPostgreSQL::dbUnloadDriver(drv)
   # Return
   return(res)
+}
+
+################ Helper Functions Below ################
+#' db_type_converter
+#' @description This function converts the type to align with the requirement. See requirement online.
+#' @param dbname  The name of the database. Used to distinguish data.
+#' @param data    The actual data.frame to convert.
+#' @return The modified data.frame
+#' @examples # data is the output from any get_from_db function
+#' @examples data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
+#' @examples # convert the type of the columns
+#' @examples data <- db_type_converter("zillow_2017_nov", data)
+#' @export
+db_type_converter <- function(dbname, data){
+  # Change data type for Zillow_Housing data
+  if(dbname == 'zillow_2017_nov'){
+    # Get columns
+    cols <- colnames(data)
+    # importparcelid
+    if("importparcelid" %in% cols) data$importparcelid <- as.integer(data$importparcelid)
+    # fips
+    if("fips" %in% cols) data$fips <- as.integer(data$fips)
+    # propertyzip
+    if("propertyzip" %in% cols) data$propertyzip <- as.integer(data$propertyzip)
+    # propertyaddresscensustractandblock
+    if("propertyaddresscensustractandblock" %in% cols)
+      data$propertyaddresscensustractandblock <- as.double(data$propertyaddresscensustractandblock)
+    # taxamount
+    if("taxamount" %in% cols) data$taxamount <- as.double(data$taxamount)
+    # noofstories
+    if("noofstories" %in% cols) data$noofstories <- as.double(data$noofstories)
+    # transid
+    if("transid" %in% cols) data$transid <- as.integer(data$transid)
+    # recordingdate
+    if("recordingdate" %in% cols) data$recordingdate <- as.character(data$recordingdate)
+    # documentdate
+    if("documentdate" %in% cols) data$documentdate <- as.character(data$documentdate)
+    # signaturedate
+    if("signaturedate" %in% cols) data$signaturedate <- as.character(data$signaturedate)
+    # salespriceamount
+    if("salespriceamount" %in% cols)
+      data$salespriceamount <- as.double(gsub("[\\$,]", "", data$salespriceamount))
+  }
+  return(data)
 }
