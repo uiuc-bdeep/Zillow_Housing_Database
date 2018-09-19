@@ -276,7 +276,6 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
   return(res)
 }
 
-################ Helper Functions Below ################
 #' db_type_converter
 #' @description This function converts the type to align with the requirement. See requirement online.
 #' @param data    The actual data.frame to convert.

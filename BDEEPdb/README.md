@@ -105,7 +105,18 @@ The current available data & functions are as followed. All of them have been te
 * [get_state_county](./R/county_state_fips_table.R)
 ```
 @description This function convert a vector of fips to corresponding state-county pairs
-@param fips A vector of fips numbers stored as TEXT (characters)
+@param fips  A vector of fips numbers stored as TEXT (characters)
 @return A data.frame with first column as state abbreviation, second column as county name,
         both in lower case, and third column fips.
 ```
+
+* [db_type_converter](./R/db_type_converter.R)
+```
+@description This function converts the type to align with the requirement. See requirement online.
+@param data    The actual data.frame to convert.
+@param dbname  The name of the database. Used to distinguish data.
+@return The modified data.frame
+```
+## Notes
+### Data Type
+For the Zillow_Housing data, please refer to [this table](./Zillow_Housing_Type_Info.pdf) to check for type compatibility for each column.
