@@ -279,15 +279,17 @@ send_to_db <- function(df, table_name, schema_name="public", database_name="zill
 ################ Helper Functions Below ################
 #' db_type_converter
 #' @description This function converts the type to align with the requirement. See requirement online.
-#' @param dbname  The name of the database. Used to distinguish data.
 #' @param data    The actual data.frame to convert.
+#' @param dbname  The name of the database. Used to distinguish data.
 #' @return The modified data.frame
 #' @examples # data is the output from any get_from_db function
 #' @examples data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
 #' @examples # convert the type of the columns
-#' @examples data <- db_type_converter("zillow_2017_nov", data)
+#' @examples data <- db_type_converter(data)
+#' @examples # ... or you can specify the database
+#' @examples data <- db_type_converter(data, dbname = "zillow_2017_nov")
 #' @export
-db_type_converter <- function(dbname, data){
+db_type_converter <- function(data, dbname = "zillow_2017_nov"){
   # Change data type for Zillow_Housing data
   if(dbname == 'zillow_2017_nov'){
     # Get columns
@@ -302,7 +304,8 @@ db_type_converter <- function(dbname, data){
     if("propertyaddresscensustractandblock" %in% cols)
       data$propertyaddresscensustractandblock <- as.double(data$propertyaddresscensustractandblock)
     # taxamount
-    if("taxamount" %in% cols) data$taxamount <- as.double(data$taxamount)
+    if("taxamount" %in% cols)
+      data$taxamount <- as.double(gsub("[\\$,]", "", data$taxamount))
     # noofstories
     if("noofstories" %in% cols) data$noofstories <- as.double(data$noofstories)
     # transid

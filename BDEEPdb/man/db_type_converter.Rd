@@ -4,12 +4,12 @@
 \alias{db_type_converter}
 \title{db_type_converter}
 \usage{
-db_type_converter(dbname, data)
+db_type_converter(data, dbname = "zillow_2017_nov")
 }
 \arguments{
-\item{dbname}{The name of the database. Used to distinguish data.}
-
 \item{data}{The actual data.frame to convert.}
+
+\item{dbname}{The name of the database. Used to distinguish data.}
 }
 \value{
 The modified data.frame
@@ -21,5 +21,7 @@ This function converts the type to align with the requirement. See requirement o
 # data is the output from any get_from_db function
 data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
 # convert the type of the columns
-data <- db_type_converter("zillow_2017_nov", data)
+data <- db_type_converter(data)
+# ... or you can specify the database
+data <- db_type_converter(data, dbname = "zillow_2017_nov")
 }
