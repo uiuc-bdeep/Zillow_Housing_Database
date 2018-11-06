@@ -77,11 +77,11 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
   # Return a list if more than one input states
   print("Finished!")
   if(len==1){
-    return(hedonics[[1]])
+    return(db_type_converter(hedonics[[1]], dbname=database_name))
   } else if(append){
-    return(do.call("rbind", hedonics))
+    return(db_type_converter(do.call("rbind", hedonics), dbname=database_name))
   } else{
-    return(hedonics)
+    return(db_type_converter(hedonics, dbname=database_name))
   }
 }
 
@@ -136,9 +136,9 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
   # Construct returned hedonics
   print("Finished!")
   if(append){
-    return(do.call("rbind", hedonics))
+    return(db_type_converter(do.call("rbind", hedonics), dbname=database_name))
   } else {
-    return(hedonics)
+    return(db_type_converter(hedonics, dbname=database_name))
   }
 }
 
@@ -216,7 +216,7 @@ get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141
   # Close the connection
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
-  return(hedonics)
+  return(db_type_converter(hedonics, dbname=database_name))
 }
 
 #' send_to_db
@@ -318,6 +318,11 @@ db_type_converter <- function(data, dbname = "zillow_2017_nov"){
     # salespriceamount
     if("salespriceamount" %in% cols)
       data$salespriceamount <- as.double(gsub("[\\$,]", "", data$salespriceamount))
+  } else if (dbname == "infousa_2018"){
+    # signaturedate
+    if("FAMILYID" %in% cols) data$FAMILYID <- as.character(data$FAMILYID)
+    # signaturedate
+    if("LOCATIONID" %in% cols) data$LOCATIONID <- as.character(data$LOCATIONID)
   }
   return(data)
 }

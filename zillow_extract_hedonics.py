@@ -53,9 +53,10 @@ cursor.execute(""" SELECT RowID, ImportParcelID, LoadID,
                           TaxAmount, TaxYear
   				  INTO %s.BASE FROM %s.utmain
 			   """ % (zasmschema, zasmschema))
-# clear duplicates
+
+# clear duplicates, keep the only importparcelid with the largest loadid
 cursor.execute(""" WITH DATA AS (
-						SELECT ImportParcelID, MIN(LoadID) AS LoadID, Count(*)
+						SELECT ImportParcelID, MAX(LoadID) AS LoadID, COUNT(*)
 						FROM %s.BASE
 						GROUP BY ImportParcelID
 						HAVING COUNT(*) > 1
@@ -65,6 +66,7 @@ cursor.execute(""" WITH DATA AS (
 				   WHERE DATA.ImportParcelID = BA.ImportParcelID
 				   AND DATA.LoadID > BA.LoadID
 			   """ % (zasmschema, zasmschema))
+
 cursor.execute(""" SELECT RowID, NoOfUnits, BuildingOrImprovementNumber,
                        	  YearBuilt, EffectiveYearBuilt, YearRemodeled,
                        	  NoOfStories, StoryTypeStndCode, TotalRooms,
@@ -87,33 +89,36 @@ cursor.execute(""" SELECT RowID, NoOfUnits, BuildingOrImprovementNumber,
 	                        'RR119',  /* Garden Home */
 	                        'RR120')
 			   """ % (zasmschema, zasmschema))
+
 # collect zasmt hedonics
-cursor.execute(""" CREATE TABLE %s.HEDONICS AS (
-					WITH ATTR AS (
+cursor.execute(""" WITH ATTR AS (
 						SELECT *
 					    FROM %s.BASE
 						INNER JOIN %s.BLDG
 					    USING (RowID)
 					),
-				   	SQFT AS (
-						SELECT *
-				   		FROM %s.utbuildingareas
+					SQFT AS (
+						SELECT RowID,
+							   BuildingOrImprovementNumber,
+							   MAX(BuildingAreaSqFt) AS SqFeet
+						FROM %s.utbuildingareas
 						WHERE BuildingAreaStndCode
 						IN( 'BAL',  /* Building Area Living */
-                            'BAF',  /* Building Area Finished */
-                            'BAE',  /* Effective Building Area */
-                            'BAG',  /* Gross Building Area */
-                            'BAJ',  /* Building Area Adjusted */
-                            'BAT',  /* Building Area Total */
-                            'BLF')
+							'BAF',  /* Building Area Finished */
+							'BAE',  /* Effective Building Area */
+							'BAG',  /* Gross Building Area */
+							'BAJ',  /* Building Area Adjusted */
+							'BAT',  /* Building Area Total */
+							'BLF')
+						GROUP BY RowID, BuildingOrImprovementNumber
 					)
 					SELECT ATTR.*,
-						   SQFT.buildingareasequencenumber,
-						   SQFT.buildingareastndcode,
-						   SQFT.buildingareasqft, SQFT.batchid
+						   SQFT.SqFeet
+					INTO %s.HEDONICS
 					FROM ATTR
 					LEFT JOIN SQFT
-					ON ATTR.RowID = SQFT.RowID)
+					ON ATTR.RowID = SQFT.RowID
+					AND ATTR.BuildingOrImprovementNumber = SQFT.BuildingOrImprovementNumber
 			   """ % (zasmschema, zasmschema, zasmschema, zasmschema))
 conn.commit()
 print("ZAsmt hedonics finished")
