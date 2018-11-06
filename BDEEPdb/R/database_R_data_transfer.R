@@ -320,9 +320,9 @@ db_type_converter <- function(data, dbname = "zillow_2017_nov"){
       data$salespriceamount <- as.double(gsub("[\\$,]", "", data$salespriceamount))
   } else if (dbname == "infousa_2018"){
     # signaturedate
-    if("FAMILYID" %in% cols) data$FAMILYID <- as.character(data$FAMILYID)
+    if("FAMILYID" %in% cols) data$FAMILYID <- as.integer(data$FAMILYID)
     # signaturedate
-    if("LOCATIONID" %in% cols) data$LOCATIONID <- as.character(data$LOCATIONID)
+    if("LOCATIONID" %in% cols) data$LOCATIONID <- as.integer(data$LOCATIONID)
   }
   return(data)
 }
