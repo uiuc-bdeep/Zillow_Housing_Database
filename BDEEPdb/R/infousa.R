@@ -126,23 +126,23 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*", append=TRUE){
   for(yr in 2006:2017){
     # Process state-county sequentially
     for(i in 1:nrow(state_county)){
-      print(paste("Processing YEAR:", single_year,
+      print(paste("Processing YEAR:", yr,
                   "STATE:", toupper(state_county[i, 1]),
                   "COUNTY:", state_county[i, 2],
                   "CENSUS2010TRACT:", paste0(tract, collapse = ", ")))
       if(state_county[i, 3] == 0){
         res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                                 paste(columns, collapse = ","),
-                                                                " FROM year", single_year, "part.", state_county[i, 1]))
+                                                                " FROM year", yr, "part.", state_county[i, 1]))
       } else if (length(tract)==1 && tract=="*") {
         res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
-                                                           " FROM year", single_year, "part.", state_county[i, 1],
+                                                           " FROM year", yr, "part.", state_county[i, 1],
                                                            " WHERE \"CENSUS2010COUNTYCODE\"=", state_county[i, 3]))
       } else {
         res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
-                                                           " FROM year", single_year, "part.", state_county[i, 1],
+                                                           " FROM year", yr, "part.", state_county[i, 1],
                                                            " WHERE \"CENSUS2010COUNTYCODE\"=", state_county[i, 3],
                                                            " AND ", tract_spec))
       }
