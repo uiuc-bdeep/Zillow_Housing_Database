@@ -11,22 +11,22 @@
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
-#' @examples  test <- get_infousa_location(2006, 01001)
-#' @examples  test <- get_infousa_location(2006, 02020, tract=c(001802,002900))
+#' @examples  test <- get_infousa_location(2006, "01001")
+#' @examples  test <- get_infousa_location(2006, "02020", tract=c(001802,002900))
 #' @return A data.frame including all data from the given year, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
 get_infousa_location <- function(single_year, fips, tract="*", columns="*", append=TRUE){
   # Check valid input
   if(any(nchar(fips)!=5)){
-    print("Invalid fips codes!")
+    print("Invalid fips codes! Please enter fips code as characters.")
     return(NULL)
   }
   state_county <- get_state_county(fips)[, c("state", "county", "county_code")]
   # state_county$county_code <- as.integer(state_county$county_code)
 
   # Initialize tract specification
-  if(tract!="*"){
+  if(length(tract)>1 || tract!="*"){
     if(nrow(state_county) > 1){
       print("WARNING: Tracts are unique only in one county!")
     }

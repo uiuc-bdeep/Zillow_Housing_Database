@@ -28,6 +28,6 @@ A data.frame including all data from the given year, fips and tract
 This function gets a data.frame including all data from the given state abbr. and county.
 }
 \examples{
- test <- get_infousa_location(2006, 01001)
- test <- get_infousa_location(2006, 02020, tract=c(001802,002900))
+ test <- get_infousa_location(2006, "01001")
+ test <- get_infousa_location(2006, "02020", tract=c(001802,002900))
 }
