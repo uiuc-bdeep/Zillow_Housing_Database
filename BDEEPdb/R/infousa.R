@@ -121,7 +121,7 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*", append=TRUE){
                                 user = "postgres",
                                 password = "bdeep")
   
-  first <- True
+  first <- TRUE
   # Iterate over years
   for(yr in 2006:2017){
     # Process state-county sequentially
@@ -152,6 +152,7 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*", append=TRUE){
     # Append to final result list
     if(first){
       res <- res_oneyear
+      first <- FALSE
     } else {
       res <- rbind(res, res_oneyear)
     }
