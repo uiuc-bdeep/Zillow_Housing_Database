@@ -8,6 +8,8 @@ get_infousa_location(single_year, fips, tract = "*", columns = "*",
   append = TRUE)
 }
 \arguments{
+\item{single_year}{An integer indicating a single year}
+
 \item{fips}{A vector of integers indicating fips.
 If the entire state is wanted, set county code to 000.}
 
@@ -18,14 +20,12 @@ Note that tracts are unique only in the current county. Default to all tracts.}
 
 \item{append}{If append is true, return a single data.frame with rows appended, otherwise a
 list of data.frames from each state.}
-
-\item{year}{An integer indicating year}
 }
 \value{
 A data.frame including all data from the given year, fips and tract
 }
 \description{
-This function gets a data.frame including all data from the given state abbr. and county.
+This function gets a data.frame including all data from the given location in a single year.
 }
 \examples{
  test <- get_infousa_location(2006, "01001")
