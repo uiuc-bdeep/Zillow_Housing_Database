@@ -52,7 +52,7 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
       hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
                                                            " FROM year", single_year, "part.", state_county[i, 1]))
-    } else if (tract=="*") {
+    } else if (length(tract)==1 && tract=="*") {
       hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
                                                            " FROM year", single_year, "part.", state_county[i, 1],
