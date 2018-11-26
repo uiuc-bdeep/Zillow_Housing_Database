@@ -47,7 +47,7 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
 
   # Process state-county sequentially
   for(i in 1:nrow(state_county)){
-    print(paste("Processing state", toupper(state_county[i, 1]), "county", state_county[i, 2]))
+    print(paste("Processing state", toupper(state_county[i, 1]), "county", state_county[i, 2], "tract", paste0(tract, collapse = ", ")))
     if(state_county[i, 3] == 0){
       hedonics[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
