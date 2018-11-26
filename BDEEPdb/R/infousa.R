@@ -95,7 +95,7 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
 #' @return A data.frame including data from all years, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
-get_infousa_multiyear <- function(fips, tract="*", columns="*", append=TRUE){
+get_infousa_multiyear <- function(fips, tract="*", columns="*"){
   # Check valid input
   if(any(nchar(fips)!=5)){
     print("Invalid fips codes! Please enter fips code as characters.")
