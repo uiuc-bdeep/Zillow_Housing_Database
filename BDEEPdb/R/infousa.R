@@ -26,7 +26,7 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
   # state_county$county_code <- as.integer(state_county$county_code)
 
   # Initialize tract specification
-  if(length(tract)>1 || tract!="*"){
+  if(length(tract)>1 || tract[1]!="*"){
     if(nrow(state_county) > 1){
       print("WARNING: Tracts are unique only in one county!")
     }
