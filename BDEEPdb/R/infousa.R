@@ -146,18 +146,21 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*"){
                                                            " WHERE \"CENSUS2010COUNTYCODE\"=", state_county[i, 3],
                                                            " AND ", tract_spec))
       }
-      res_oneyear$"YEAR" <- yr
+      if(nrow(res_oneyear)>0){
+        res_oneyear$"YEAR" <- yr
+      }
       gc()
     }
     # Append to final result list
-    if(first){
-      res <- res_oneyear
-      first <- FALSE
-    } else {
-      res <- rbind(res, res_oneyear)
+    if(nrow(res_oneyear)>0){
+      if(first){
+        res <- res_oneyear
+        first <- FALSE
+      } else {
+        res <- rbind(res, res_oneyear)
+      }
     }
   }
-  
  
   # close the connection
   RPostgreSQL::dbDisconnect(con)
