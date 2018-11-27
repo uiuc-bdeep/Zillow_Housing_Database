@@ -165,6 +165,7 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*"){
   # close the connection
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
+  print("Finished!")
 
   return(res)
 }

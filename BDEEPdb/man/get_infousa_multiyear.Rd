@@ -4,7 +4,7 @@
 \alias{get_infousa_multiyear}
 \title{get_infousa_multiyear}
 \usage{
-get_infousa_multiyear(fips, tract = "*", columns = "*", append = TRUE)
+get_infousa_multiyear(fips, tract = "*", columns = "*")
 }
 \arguments{
 \item{fips}{A vector of integers indicating fips.
