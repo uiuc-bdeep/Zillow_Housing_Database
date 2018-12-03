@@ -4,11 +4,13 @@
 \alias{get_infousa_multiyear}
 \title{get_infousa_multiyear}
 \usage{
-get_infousa_multiyear(fips, startyear, endyear, tract = "*", columns = "*")
+get_infousa_multiyear(loc, startyear, endyear, tract = "*", columns = "*",
+  method = "fips")
 }
 \arguments{
-\item{fips}{A vector of integers indicating fips.
-If the entire state is wanted, set county code to 000.}
+\item{loc}{A vector of integers indicating fips ("fips" method) or a data.frame with first 2
+columns being state abbr. & county name ("names" method).
+If the entire state is needed, set county code to 000 ("fips") or set county name to "*" ("names").}
 
 \item{startyear}{The first year to get data}
 
@@ -18,6 +20,8 @@ If the entire state is wanted, set county code to 000.}
 Note that tracts are unique only in the current county. Default to all tracts.}
 
 \item{columns}{A vector of column names to export. Default to all columns (i.e. "*").}
+
+\item{method}{Method for input. Choose between "fips" and "names". Default to "fips".}
 }
 \value{
 A data.frame including data from all years, fips and tract

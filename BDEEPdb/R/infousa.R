@@ -105,29 +105,42 @@ get_infousa_location <- function(single_year, loc, tract="*", columns="*", metho
 
 #' get_infousa_multiyear
 #' @description This function gets a data.frame including all data from the given location from all years.
-#' @param fips          A vector of integers indicating fips.
-#'                      If the entire state is wanted, set county code to 000.
+#' @param loc           A vector of integers indicating fips ("fips" method) or a data.frame with first 2
+#'                      columns being state abbr. & county name ("names" method).
+#'                      If the entire state is needed, set county code to 000 ("fips") or set county name to "*" ("names").
 #' @param startyear     The first year to get data
 #' @param endyear       The last year to get data
 #' @param tract         A vector of integers or chars indicating tract in the county.
 #'                      Note that tracts are unique only in the current county. Default to all tracts.
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
+#' @param method        Method for input. Choose between "fips" and "names". Default to "fips".
 #' @examples  test <- get_infousa_location("01001")
 #' @examples  test <- get_infousa_location("02020", tract=c(001802,002900))
 #' @return A data.frame including data from all years, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
-get_infousa_multiyear <- function(fips, startyear, endyear, tract="*", columns="*"){
+get_infousa_multiyear <- function(loc, startyear, endyear, tract="*", columns="*", method="fips"){
   # Check valid input
-  if(any(nchar(fips)!=5)){
-    print("Invalid fips codes! Please enter fips code as characters.")
-    return(NULL)
-  }
   if(startyear < 2006 || startyear > 2017 || endyear < 2006 || endyear > 2017 || endyear < startyear){
     print("Invalid year range! Please ensure startyear <= endyear and both in [2006,2017].")
     return(NULL)
   }
-  state_county <- get_state_county(fips)[, c("state", "county", "county_code")]
+  if (method=="fips") {
+    if (any(nchar(fips)!=5)){
+      print("Invalid fips codes! Try entering fips code as characters.")
+      return(NULL)
+    }
+    state_county <- get_state_county_by_fips(fips)[, c("state", "county", "county_code")]
+  } else if (method=="names"){
+    if (ncol(loc)!=2){
+      print("Invalid input data.frame!")
+      return(NULL)
+    }
+    state_county <- get_state_county_by_names(loc)[, c("state", "county", "county_code")]
+  } else {
+    print("Invalid method!")
+    return(NULL)
+  }
   # state_county$county_code <- as.integer(state_county$county_code)
   
   # Initialize tract specification
