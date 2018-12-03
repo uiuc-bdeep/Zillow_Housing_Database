@@ -61,7 +61,7 @@ get_state_county_by_names <- function(sc){
       r$fips_ct <- "000"
       f$fips <- paste0(r$fips_st, "000")
     } else {
-      r <- county_state_fips[which(toupper(county_state_fips$ct_name)==sc[i,2] & county_state_fips$st_abbr==sc[i,1]),]
+      r <- county_state_fips[which(county_state_fips$ct_name==toupper(sc[i,2]) & county_state_fips$st_abbr==tolower(sc[i,1])),]
     }
     if(nrow(r)!=1){
       print(paste("Area not found:", n))
