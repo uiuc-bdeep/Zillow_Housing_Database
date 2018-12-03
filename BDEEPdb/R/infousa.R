@@ -4,25 +4,45 @@
 #' get_infousa_location
 #' @description This function gets a data.frame including all data from the given location in a single year.
 #' @param single_year   An integer indicating a single year
-#' @param fips          A vector of integers indicating fips.
-#'                      If the entire state is wanted, set county code to 000.
+#' @param loc           A vector of integers indicating fips ("fips" method) or a data.frame with first 2
+#'                      columns being state abbr. & county name ("names" method).
+#'                      If the entire state is needed, set county code to 000 ("fips") or set county name to "*" ("names").
 #' @param tract         A vector of integers or chars indicating tract in the county.
 #'                      Note that tracts are unique only in the current county. Default to all tracts.
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
+#' @param method        Method for input. Choose between "fips" and "names". Default to "fips".
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
+#' @examples  # Using fips
 #' @examples  test <- get_infousa_location(2006, "01001")
 #' @examples  test <- get_infousa_location(2006, "02020", tract=c(001802,002900))
+#' @examples   
+#' @examples  # Using state and county names
+#' @examples  x <- data.frame(state=c('il'), county=c('champaign'))
+#' @examples  test <- get_infousa_location(2017, x, method="names")
 #' @return A data.frame including all data from the given year, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
-get_infousa_location <- function(single_year, fips, tract="*", columns="*", append=TRUE){
+get_infousa_location <- function(single_year, loc, tract="*", columns="*", method="fips", append=TRUE){
+  
   # Check valid input
-  if(any(nchar(fips)!=5)){
-    print("Invalid fips codes! Please enter fips code as characters.")
+  if (method=="fips") {
+    if (any(nchar(fips)!=5)){
+      print("Invalid fips codes! Try entering fips code as characters.")
+      return(NULL)
+    }
+    state_county <- get_state_county_by_fips(fips)[, c("state", "county", "county_code")]
+  } else if (method=="names"){
+    if (ncol(loc)!=2){
+      print("Invalid input data.frame!")
+      return(NULL)
+    }
+    state_county <- get_state_county_by_names(loc)[, c("state", "county", "county_code")]
+  } else {
+    print("Invalid method!")
     return(NULL)
   }
-  state_county <- get_state_county(fips)[, c("state", "county", "county_code")]
+  
   # state_county$county_code <- as.integer(state_county$county_code)
 
   # Initialize tract specification
@@ -87,6 +107,8 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
 #' @description This function gets a data.frame including all data from the given location from all years.
 #' @param fips          A vector of integers indicating fips.
 #'                      If the entire state is wanted, set county code to 000.
+#' @param startyear     The first year to get data
+#' @param endyear       The last year to get data
 #' @param tract         A vector of integers or chars indicating tract in the county.
 #'                      Note that tracts are unique only in the current county. Default to all tracts.
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
@@ -95,10 +117,14 @@ get_infousa_location <- function(single_year, fips, tract="*", columns="*", appe
 #' @return A data.frame including data from all years, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
-get_infousa_multiyear <- function(fips, tract="*", columns="*"){
+get_infousa_multiyear <- function(fips, startyear, endyear, tract="*", columns="*"){
   # Check valid input
   if(any(nchar(fips)!=5)){
     print("Invalid fips codes! Please enter fips code as characters.")
+    return(NULL)
+  }
+  if(startyear < 2006 || startyear > 2017 || endyear < 2006 || endyear > 2017 || endyear < startyear){
+    print("Invalid year range! Please ensure startyear <= endyear and both in [2006,2017].")
     return(NULL)
   }
   state_county <- get_state_county(fips)[, c("state", "county", "county_code")]
@@ -123,7 +149,7 @@ get_infousa_multiyear <- function(fips, tract="*", columns="*"){
   
   first <- TRUE
   # Iterate over years
-  for(yr in 2006:2017){
+  for(yr in startyear:endyear){
     # Process state-county sequentially
     for(i in 1:nrow(state_county)){
       print(paste("Processing YEAR:", yr,

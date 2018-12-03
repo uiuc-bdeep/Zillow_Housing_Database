@@ -4,19 +4,22 @@
 \alias{get_infousa_location}
 \title{get_infousa_location}
 \usage{
-get_infousa_location(single_year, fips, tract = "*", columns = "*",
-  append = TRUE)
+get_infousa_location(single_year, loc, tract = "*", columns = "*",
+  method = "fips", append = TRUE)
 }
 \arguments{
 \item{single_year}{An integer indicating a single year}
 
-\item{fips}{A vector of integers indicating fips.
-If the entire state is wanted, set county code to 000.}
+\item{loc}{A vector of integers indicating fips ("fips" method) or a data.frame with first 2
+columns being state abbr. & county name ("names" method).
+If the entire state is needed, set county code to 000 ("fips") or set county name to "*" ("names").}
 
 \item{tract}{A vector of integers or chars indicating tract in the county.
 Note that tracts are unique only in the current county. Default to all tracts.}
 
 \item{columns}{A vector of column names to export. Default to all columns (i.e. "*").}
+
+\item{method}{Method for input. Choose between "fips" and "names". Default to "fips".}
 
 \item{append}{If append is true, return a single data.frame with rows appended, otherwise a
 list of data.frames from each state.}
@@ -28,6 +31,11 @@ A data.frame including all data from the given year, fips and tract
 This function gets a data.frame including all data from the given location in a single year.
 }
 \examples{
+ # Using fips
  test <- get_infousa_location(2006, "01001")
  test <- get_infousa_location(2006, "02020", tract=c(001802,002900))
+  
+ # Using state and county names
+ x <- data.frame(state=c('il'), county=c('champaign'))
+ test <- get_infousa_location(2017, x, method="names")
 }

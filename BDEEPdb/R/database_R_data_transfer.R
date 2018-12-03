@@ -93,7 +93,7 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
-#' @examples table <- get_state_county("01001")[, c("state","county")]
+#' @examples table <- get_state_county_by_fips("01001")[, c("state","county")]
 #' @examples data <- get_from_db_state_county(table)
 #' @return A data.frame including all data from the given state and county
 #' @import RPostgreSQL DBI
@@ -103,7 +103,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
   # Check valid input
   if(nrow(state_county)==0 || ncol(state_county)!=2 || any(nchar(as.character(state_county[,1]))!=2)){
     print("Invalid argument! Please input variable state_county as followed:")
-    print(get_state_county("01001")[, c("state","county")])
+    print(get_state_county_by_fips("01001")[, c("state","county")])
     return(NULL)
   }
   # Initialize list for return
@@ -158,7 +158,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
 #' @export
 get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
                              host_ip="141.142.209.139", append=TRUE){
-  sc <- get_state_county(fips)[, c("state","county")]
+  sc <- get_state_county_by_fips(fips)[, c("state","county")]
   return(get_from_db_state_county(sc,
                                   columns=columns,
                                   database_name=database_name,

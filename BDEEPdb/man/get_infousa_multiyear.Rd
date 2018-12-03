@@ -4,11 +4,15 @@
 \alias{get_infousa_multiyear}
 \title{get_infousa_multiyear}
 \usage{
-get_infousa_multiyear(fips, tract = "*", columns = "*")
+get_infousa_multiyear(fips, startyear, endyear, tract = "*", columns = "*")
 }
 \arguments{
 \item{fips}{A vector of integers indicating fips.
 If the entire state is wanted, set county code to 000.}
+
+\item{startyear}{The first year to get data}
+
+\item{endyear}{The last year to get data}
 
 \item{tract}{A vector of integers or chars indicating tract in the county.
 Note that tracts are unique only in the current county. Default to all tracts.}
