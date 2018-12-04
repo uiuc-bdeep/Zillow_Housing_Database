@@ -30,6 +30,6 @@ A data.frame including data from all years, fips and tract
 This function gets a data.frame including all data from the given location from all years.
 }
 \examples{
- test <- get_infousa_location("01001")
- test <- get_infousa_location("02020", tract=c(001802,002900))
+ test <- get_infousa_multiyear(2017, 2017, "01001")
+ test <- get_infousa_multiyear(2006, 2016, "02020", tract=c(001802,002900))
 }

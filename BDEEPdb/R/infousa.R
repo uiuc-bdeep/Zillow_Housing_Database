@@ -24,7 +24,6 @@
 #' @import RPostgreSQL DBI
 #' @export
 get_infousa_location <- function(single_year, loc, tract="*", columns="*", method="fips", append=TRUE){
-  
   # Check valid input
   if (method=="fips") {
     if (any(nchar(loc)!=5)){
@@ -114,8 +113,8 @@ get_infousa_location <- function(single_year, loc, tract="*", columns="*", metho
 #'                      Note that tracts are unique only in the current county. Default to all tracts.
 #' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
 #' @param method        Method for input. Choose between "fips" and "names". Default to "fips".
-#' @examples  test <- get_infousa_location("01001")
-#' @examples  test <- get_infousa_location("02020", tract=c(001802,002900))
+#' @examples  test <- get_infousa_multiyear(2017, 2017, "01001")
+#' @examples  test <- get_infousa_multiyear(2006, 2016, "02020", tract=c(001802,002900))
 #' @return A data.frame including data from all years, fips and tract
 #' @import RPostgreSQL DBI
 #' @export
@@ -208,3 +207,74 @@ get_infousa_multiyear <- function(startyear, endyear, loc, tract="*", columns="*
 
   return(res)
 }
+
+
+#' get_infousa_zip
+#' @description This function gets a data.frame including all data from the given location from all years.
+#' @param startyear     The first year to get data
+#' @param endyear       The last year to get data
+#' @param zip           A vector of characters indicating zipcodes to get data from.
+#' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
+#' @examples  test <- get_infousa_zip(2016, 2017, c("61801", "61820"))
+#' @return A data.frame including data from all years, fips and tract
+#' @import RPostgreSQL DBI
+#' @export
+get_infousa_zip <- function(startyear, endyear, zip, columns="*"){
+  # Check valid input
+  if(startyear < 2006 || startyear > 2017 || endyear < 2006 || endyear > 2017 || endyear < startyear){
+    print("Invalid year range! Please ensure startyear <= endyear and both in [2006,2017].")
+    return(NULL)
+  }
+  if (any(nchar(zip)!=5)){
+    print("Invalid fips codes! Try entering fips code as characters.")
+    return(NULL)
+  }
+  sc_zip <- get_state_city_zipcode(zip)[, c("state", "county", "county_code")]
+  
+  # Initialize connection
+  drv <- DBI::dbDriver("PostgreSQL")
+  con <- RPostgreSQL::dbConnect(drv,
+                                dbname = "infousa_2018",
+                                host = "141.142.209.139",
+                                port = 5432,
+                                user = "postgres",
+                                password = "bdeep")
+  
+  first <- TRUE
+  # Iterate over years
+  for(yr in startyear:endyear){
+    # Process state-county sequentially
+    for(i in 1:nrow(sc_zip)){
+      print(paste("Processing YEAR:", yr,
+                  "STATE:", toupper(sc_zip[i, 1]),
+                  "CITY:", sc_zip[i, 3],
+                  "ZIPCODE:", sc_zip[i, 2]))
+      res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
+                                                         paste(columns, collapse = ","),
+                                                         " FROM year", yr, "part.", sc_zip[i, 1],
+                                                         " WHERE \"ZIP\"=", sc_zip[i, 2]))
+      if(nrow(res_oneyear)>0){
+        res_oneyear$"YEAR" <- yr
+      }
+      gc()
+    }
+    # Append to final result list
+    if(nrow(res_oneyear)>0){
+      if(first){
+        res <- res_oneyear
+        first <- FALSE
+      } else {
+        res <- rbind(res, res_oneyear)
+      }
+    }
+  }
+  
+  # close the connection
+  RPostgreSQL::dbDisconnect(con)
+  RPostgreSQL::dbUnloadDriver(drv)
+  print("Finished!")
+  
+  return(res)
+}
+
+
