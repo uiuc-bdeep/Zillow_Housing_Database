@@ -252,7 +252,7 @@ get_infousa_zip <- function(startyear, endyear, zip, columns="*"){
       res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                          paste(columns, collapse = ","),
                                                          " FROM year", yr, "part.", sc_zip[i, 1],
-                                                         " WHERE \"ZIP\"=", sc_zip[i, 2]))
+                                                         " WHERE \"ZIP \"=", sc_zip[i, 2]))
       if(nrow(res_oneyear)>0){
         res_oneyear$"YEAR" <- yr
       }
