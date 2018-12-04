@@ -229,7 +229,7 @@ get_infousa_zip <- function(startyear, endyear, zip, columns="*"){
     print("Invalid fips codes! Try entering fips code as characters.")
     return(NULL)
   }
-  sc_zip <- get_state_city_zipcode(zip)[, c("state", "county", "county_code")]
+  sc_zip <- get_state_city_zipcode(zip)[, c("state", "zip", "city")]
   
   # Initialize connection
   drv <- DBI::dbDriver("PostgreSQL")
