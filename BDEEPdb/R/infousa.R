@@ -277,4 +277,94 @@ get_infousa_zip <- function(startyear, endyear, zip, columns="*"){
   return(res)
 }
 
+#' get_infousa_fid
+#' @description This function gets a data.frame including all data from the given vector of familyid from given years.
+#' @param startyear     The first year to get data
+#' @param endyear       The last year to get data
+#' @param fid           A vector of characters indicating familyids to get data from.
+#' @param columns       A vector of column names to export. Default to all columns (i.e. "*").
+#' @examples  test <- get_infousa_fid(2006, 2007, c("54299524", "54320129"))
+#' @return A data.frame
+#' @import RPostgreSQL DBI
+#' @export
+get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
+  # Check valid input
+  if(startyear < 2006 || startyear > 2017 || endyear < 2006 || endyear > 2017 || endyear < startyear){
+    print("Invalid year range! Please ensure startyear <= endyear and both in [2006,2017].")
+    return(NULL)
+  }
+  
+  # Create placeholder
+  fid <- as.integer(fid)
+  check <- rep(FALSE, length(fid))
+  
+  # Initialize connection
+  drv <- DBI::dbDriver("PostgreSQL")
+  con <- RPostgreSQL::dbConnect(drv,
+                                dbname = "infousa_2018",
+                                host = "141.142.209.139",
+                                port = 5432,
+                                user = "postgres",
+                                password = "bdeep")
 
+  first <- TRUE
+  # Process each split
+  for(s in split_points){
+    # Find one-year data
+    partition <- fid > s & fid < (s+199999999)
+    part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(partition)], collapse = " OR \"FAMILYID\"="),")")
+    # Iterate over years
+    for(yr in startyear:endyear){
+      print(paste("Processing YEAR:", yr, "FID RANGE:", s, " TO ", (s+199999999)))
+      # Get data
+      res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
+                                                         paste(columns, collapse = ","),
+                                                         " FROM year", yr, "fid.\"", s,
+                                                         "\" WHERE ", part_spec))
+      if(nrow(res_oneyear)>0){
+        res_oneyear$"YEAR" <- yr
+      }
+      gc()
+      # Append to final result list
+      if(nrow(res_oneyear)>0){
+        if(first){
+          res <- res_oneyear
+          first <- FALSE
+        } else {
+          res <- rbind(res, res_oneyear)
+        }
+      }
+    }
+    check <- check | partition
+  }
+  
+  # Check else
+  check <- !check
+  if(any(check)){
+    part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(check)], collapse = " OR \"FAMILYID\"="),")")
+    res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
+                                                       paste(columns, collapse = ","),
+                                                       " FROM year2017fid.\"else\" WHERE ", part_spec))
+    if(nrow(res_oneyear)>0){
+      res_oneyear$"YEAR" <- yr
+    }
+    gc()
+    # Append to final result list
+    if(nrow(res_oneyear)>0){
+      if(first){
+        res <- res_oneyear
+        first <- FALSE
+      } else {
+        res <- rbind(res, res_oneyear)
+      }
+    }
+  }
+  
+  
+  # close the connection
+  RPostgreSQL::dbDisconnect(con)
+  RPostgreSQL::dbUnloadDriver(drv)
+  print("Finished!")
+  
+  return(res)
+}
