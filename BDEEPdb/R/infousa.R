@@ -312,6 +312,9 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
   for(s in split_points){
     # Find one-year data
     partition <- fid > s & fid < (s+199999999)
+    if(all(!partition)){
+      next
+    }
     part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(partition)], collapse = " OR \"FAMILYID\"="),")")
     # Iterate over years
     for(yr in startyear:endyear){
