@@ -343,13 +343,13 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
   
   # Check else
   check <- !check
-  if(any(check)){
+  if(any(check) && endyear >= 2017){
     part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(check)], collapse = " OR \"FAMILYID\"="),")")
     res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                        paste(columns, collapse = ","),
                                                        " FROM year2017fid.\"else\" WHERE ", part_spec))
     if(nrow(res_oneyear)>0){
-      res_oneyear$"YEAR" <- yr
+      res_oneyear$"YEAR" <- 2017
     }
     gc()
     # Append to final result list
