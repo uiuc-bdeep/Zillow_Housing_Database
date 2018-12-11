@@ -30,7 +30,7 @@ get_infousa_location <- function(single_year, loc, tract="*", columns="*", metho
       print("Invalid fips codes! Try entering fips code as characters.")
       return(NULL)
     }
-    state_county <- get_state_county_by_fips(fips)[, c("state", "county", "county_code")]
+    state_county <- get_state_county_by_fips(loc)[, c("state", "county", "county_code")]
   } else if (method=="names"){
     if (ncol(loc)!=2){
       print("Invalid input data.frame!")
@@ -129,7 +129,7 @@ get_infousa_multiyear <- function(startyear, endyear, loc, tract="*", columns="*
       print("Invalid fips codes! Try entering fips code as characters.")
       return(NULL)
     }
-    state_county <- get_state_county_by_fips(fips)[, c("state", "county", "county_code")]
+    state_county <- get_state_county_by_fips(loc)[, c("state", "county", "county_code")]
   } else if (method=="names"){
     if (ncol(loc)!=2){
       print("Invalid input data.frame!")
