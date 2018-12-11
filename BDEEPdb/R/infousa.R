@@ -295,7 +295,11 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
   }
   
   # Create placeholder
-  fid <- as.integer(fid)
+  if (typeof(fid) == 'list'){
+    # flatten list
+    fid <- unlist(fid)
+  }
+  fid <- as.numeric(fid)
   check <- rep(FALSE, length(fid))
   
   # Initialize connection
