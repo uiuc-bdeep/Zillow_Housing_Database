@@ -312,6 +312,8 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
                                 password = "bdeep")
 
   first <- TRUE
+  # Avoid exponential display
+  options(scipen = 900)
   # Process each split
   for(s in split_points){
     # Find one-year data
@@ -371,6 +373,9 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
   # close the connection
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
+  # Recover display
+  options(scipen = 0)
+  # Finished!
   print("Finished!")
   
   return(res)
