@@ -312,50 +312,16 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
                                 password = "bdeep")
 
   first <- TRUE
-  # Avoid exponential display
-  options(scipen = 900)
-  # Process each split
-  for(s in split_points){
-    # Find one-year data
-    partition <- fid > s & fid < (s+199999999)
-    if(all(!partition)){
-      next
-    }
-    part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(partition)], collapse = " OR \"FAMILYID\"="),")")
-    # Iterate over years
-    for(yr in startyear:endyear){
-      print(paste("Processing YEAR:", yr, "FID RANGE:", s, " TO ", (s+199999999)))
-      # Get data
-      res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
-                                                         paste(columns, collapse = ","),
-                                                         " FROM year", yr, "fid.\"", s,
-                                                         "\" WHERE ", part_spec))
-      if(nrow(res_oneyear)>0){
-        res_oneyear$"YEAR" <- yr
-      }
-      gc()
-      # Append to final result list
-      if(nrow(res_oneyear)>0){
-        if(first){
-          res <- res_oneyear
-          first <- FALSE
-        } else {
-          res <- rbind(res, res_oneyear)
-        }
-      }
-    }
-    check <- check | partition
-  }
-  
-  # Check else
-  check <- !check
-  if(any(check) && endyear >= 2017){
-    part_spec <- paste0("(\"FAMILYID\"=", paste0(fid[which(check)], collapse = " OR \"FAMILYID\"="),")")
+  part_spec <- paste0("(\"FAMILYID\" IN (", paste(fid, collapse = ","),"))")
+  # Iterate over years
+  for(yr in startyear:endyear){
+    print(paste("Processing YEAR:", yr, "FID RANGE:", s, " TO ", (s+199999999)))
+    # Get data
     res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                        paste(columns, collapse = ","),
-                                                       " FROM year2017fid.\"else\" WHERE ", part_spec))
+                                                       " FROM year", yr, "fidkey WHERE ", part_spec))
     if(nrow(res_oneyear)>0){
-      res_oneyear$"YEAR" <- 2017
+      res_oneyear$"YEAR" <- yr
     }
     gc()
     # Append to final result list
@@ -369,12 +335,10 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
     }
   }
   
-  
   # close the connection
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
-  # Recover display
-  options(scipen = 0)
+
   # Finished!
   print("Finished!")
   

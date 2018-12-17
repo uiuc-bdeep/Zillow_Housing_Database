@@ -27,6 +27,9 @@ A data.frame including all data from the given state and county
 This function gets a data.frame including all data from the given state abbr. and county.
 }
 \examples{
+# First we need to get a data.frame as input to the get_from_db_state_county function.
+# The following returns a data.frame with columns representing state and county
 table <- get_state_county_by_fips("01001")[, c("state","county")]
+# Next we feed it into the function to get hedonics data
 data <- get_from_db_state_county(table)
 }

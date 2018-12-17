@@ -93,7 +93,10 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @param append        If append is true, return a single data.frame with rows appended, otherwise a
 #'                      list of data.frames from each state.
+#' @examples # First we need to get a data.frame as input to the get_from_db_state_county function.
+#' @examples # The following returns a data.frame with columns representing state and county
 #' @examples table <- get_state_county_by_fips("01001")[, c("state","county")]
+#' @examples # Next we feed it into the function to get hedonics data
 #' @examples data <- get_from_db_state_county(table)
 #' @return A data.frame including all data from the given state and county
 #' @import RPostgreSQL DBI
