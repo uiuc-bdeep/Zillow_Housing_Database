@@ -312,14 +312,14 @@ get_infousa_fid <- function(startyear, endyear, fid, columns="*"){
                                 password = "bdeep")
 
   first <- TRUE
-  part_spec <- paste0("(\"FAMILYID\" IN (", paste(fid, collapse = ","),"))")
+  fid_spec <- paste0("(\"FAMILYID\" IN (", paste(fid, collapse = ","),"))")
   # Iterate over years
   for(yr in startyear:endyear){
-    print(paste("Processing YEAR:", yr, "FID RANGE:", s, " TO ", (s+199999999)))
+    print(paste("Processing YEAR:", yr))
     # Get data
     res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                        paste(columns, collapse = ","),
-                                                       " FROM year", yr, "fidkey WHERE ", part_spec))
+                                                       " FROM year", yr, "fidkey WHERE ", fid_spec))
     if(nrow(res_oneyear)>0){
       res_oneyear$"YEAR" <- yr
     }
