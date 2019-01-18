@@ -25,6 +25,10 @@
 #' @export
 get_infousa_location <- function(single_year, loc, tract="*", columns="*", method="fips", append=TRUE){
   # Check valid input
+  if (length(single_year) > 1) {
+    print("Input must be a single year!")
+    return(NULL)
+  }
   if (method=="fips") {
     if (any(nchar(loc)!=5)){
       print("Invalid fips codes! Try entering fips code as characters.")

@@ -31,7 +31,7 @@ get_state_county_by_fips <- function(fips){
       r <- county_state_fips[which(county_state_fips$fips_st == substr(n, 1, 2)), ][1,]
       r$ct_name <- "ALL"
       r$fips_ct <- "000"
-      f$fips <- n
+      r$fips <- n
     } else {
       r <- county_state_fips[which(county_state_fips$fips == n), ]
     }
