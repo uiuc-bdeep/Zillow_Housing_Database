@@ -74,7 +74,7 @@ get_infousa_location <- function(single_year, loc, tract="*", columns="*", metho
                 "STATE:", toupper(state_county[i, 1]),
                 "COUNTY:", state_county[i, 2],
                 "CENSUS2010TRACT:", paste0(tract, collapse = ", ")))
-    if(state_county[i, 3] == 0){
+    if(state_county[i, 3] == "000"){
       result[[i]] <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                            paste(columns, collapse = ","),
                                                            " FROM year", single_year, "part.", state_county[i, 1]))
@@ -172,7 +172,7 @@ get_infousa_multiyear <- function(startyear, endyear, loc, tract="*", columns="*
                   "STATE:", toupper(state_county[i, 1]),
                   "COUNTY:", state_county[i, 2],
                   "CENSUS2010TRACT:", paste0(tract, collapse = ", ")))
-      if(state_county[i, 3] == 0){
+      if(state_county[i, 3] == "000"){
         res_oneyear <- RPostgreSQL::dbGetQuery(con, paste0("SELECT ",
                                                                 paste(columns, collapse = ","),
                                                                 " FROM year", yr, "part.", state_county[i, 1]))
