@@ -33,8 +33,8 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
                                 dbname = database_name,
                                 host = host_ip,
                                 port = 5432,
-                                user = "postgres",
-                                password = "bdeep")
+                                user = "zillow",
+                                password = "public")
   # Get input length
   len <- length(states_abbr)
   # Create returned list
@@ -117,8 +117,8 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
                                 dbname = database_name,
                                 host = host_ip,
                                 port = 5432,
-                                user = "postgres",
-                                password = "bdeep")
+                                user = "zillow",
+                                password = "public")
   # Process state-county sequentially
   options(warn = -1)    # suppress warning messages
   for(i in 1:nrow(state_county)){
@@ -209,8 +209,8 @@ get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141
                                 dbname = database_name,
                                 host = host_ip,
                                 port = 5432,
-                                user = "postgres",
-                                password = "bdeep")
+                                user = "zillow",
+                                password = "public")
   # Get data
   options(warn = -1)    # suppress warning messages
   hedonics <- RPostgreSQL::dbGetQuery(con, query)
