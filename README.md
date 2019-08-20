@@ -5,7 +5,7 @@ Basic pipeline:
                                          zillow_extract_hedonics.py
                                                 ------------                                                
                                                 \          /                                                
-    Input        zillow_txt_to_database.py       \        /    package:BDEEPdb                                              
+    Input        zillow_txt_to_database.py       \        /  package:BDEEPZillow                                              
      Raw        --------------------------->      Postgres   ------------------->     R      ------>    (Further   
      File       --------------------------->      Database   ------------------->    Data    ------>     Processing
 (txt, csv, ...)                                                                                          ...)      
@@ -16,8 +16,6 @@ Basic pipeline:
 ```
 python3 zillow_txt_to_database.py 01
 ```
-
-(Reference Only) The [store_BnB.py](./store_BnB.py) is placed here for reference. (Because I have a hard time finding it in the shared drive...)
 
 ## In-database Generation
 Next, you can use [zillow_extract_hedonics.py](./zillow_extract_hedonics.py) to convert **the output from the above** to the final hedonics ready for csv conversion. If you still want the raw data, use:
@@ -34,7 +32,7 @@ To transfer data from database into rds files, there are 2 possible ways.
 
 #### First method: Database -> rds
 
-Set up a direct connection to the database and get the data, using package [`BDEEPdb`](./BDEEPdb/). The reference tables `county_state_fips.rds` and `field_name.rds` are also copied to this root directory. Details in the package folder.
+Set up a direct connection to the database and get the data, using package [`BDEEPZillow`](./BDEEPZillow/). The reference tables `county_state_fips.rds` and `field_name.rds` are also copied to this root directory. Details in the package folder.
 
 The advantage of this method is simple and direct, but the maximum transfer file size is somewhere between 6.5-9 GB for this VM with 64GB RAM.
 
@@ -51,4 +49,4 @@ This method is a bit messy. The maximum transfer file size is somewhere between 
 ## File Reference in Nebula
 - All scripts: `/projects/Zillow_Housing/scripts/Generate/<script_name>`
 - CSV hedonics files: `/projects/Zillow_Housing/stores/Hedonics/new_csv_hedonics_by_states/<state>_hedonics.csv`
-- RDS hedonics files (except CA): `/projects/Zillow_Housing/stores/Hedonics/rds_hedonics_by_states/<state>_hedonics.rds`
+- RDS hedonics files (except state CA): `/projects/Zillow_Housing/stores/Hedonics/rds_hedonics_by_states/<state>_hedonics.rds`

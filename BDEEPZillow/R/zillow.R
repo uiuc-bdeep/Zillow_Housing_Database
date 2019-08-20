@@ -1,5 +1,5 @@
-# This file contains functions for data transfer between R and PostgreSQL database: get_from_db & send_to_db
-# For more information about package PostgreSQL, see https://cran.r-project.org/web/packages/RPostgreSQL/RPostgreSQL.pdf
+# This file contains functions for data transfer between R and PostgreSQL database: get_from_db_*.
+# For more information about package RPostgreSQL, see https://cran.r-project.org/web/packages/RPostgreSQL/RPostgreSQL.pdf
 
 #' get_from_db_state
 #' @description This function gets a list of data.frames from the database, according to the given
@@ -59,13 +59,13 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
     } else {
       hedonics[[i]] <- RPostgreSQL::dbGetQuery(con,
                                                paste0("SELECT ",
-                                                     paste(columns, collapse = ","),
-                                                     " FROM hedonics_new.",
-                                                     state,
-                                                     "_hedonics_new",
-                                                     " FETCH FIRST ",
-                                                     max_num_recs,
-                                                     " ROWS ONLY"))
+                                                      paste(columns, collapse = ","),
+                                                      " FROM hedonics_new.",
+                                                      state,
+                                                      "_hedonics_new",
+                                                      " FETCH FIRST ",
+                                                      max_num_recs,
+                                                      " ROWS ONLY"))
     }
     options(warn = 0)
     # Garbage collection
@@ -176,22 +176,22 @@ get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
 #' @param host_ip       A string indicating the ip address of the database VM
 #' @examples # Select single field from a given table
 #' @examples data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
-#' @examples  
+#'
 #' @examples # Select multiple fields from a given table
 #' @examples data <- get_from_db_usr("SELECT loadid, transid FROM hedonics_new.sd_hedonics_new")
-#' @examples  
+#'
 #' @examples # Select limited rows from a given table
 #' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new limit 10")
-#' @examples  
+#'
 #' @examples # Select a 'bounding box' from a given table
 #' @examples data <- get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE (propertyaddresslatitude BETWEEN 44.35 AND 44.36) AND (propertyaddresslongitude BETWEEN -98.22 AND -98.21)")
-#' @examples  
+#'
 #' @examples # Select from a list for a column (columns) in a given table
 #' @examples get_from_db_usr("SELECT * FROM hedonics_new.sd_hedonics_new WHERE county IN ('BEADLE', 'UNION')")
-#' @examples  
+#'
 #' @examples # Get the number of records (rows) in a given table
 #' @examples get_from_db_usr("SELECT count(*) FROM hedonics_new.sd_hedonics_new")
-#' @examples  
+#'
 #' @examples # Get the range of a specific field
 #' @examples get_from_db_usr("SELECT min(propertyaddresslatitude), max(propertyaddresslatitude) FROM hedonics_new.sd_hedonics_new")
 #' @return A data.frame returned by the given query.
@@ -220,61 +220,4 @@ get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141
   RPostgreSQL::dbDisconnect(con)
   RPostgreSQL::dbUnloadDriver(drv)
   return(db_type_converter(hedonics, dbname=database_name))
-}
-
-#' send_to_db
-#' @description This function sends the given table to the database.
-#' @param df            The actual data frame to send to the database
-#' @param table_name    The table in the database to send to.
-#' @param schema_name   The schema in the database to send to. Default to public schema.
-#' @param database_name A string indicating the database name
-#' @param host_ip       A string indicating the ip address of the database VM
-#' @param action        String in {"create", "append", "overwrite"}. "Create" only creates a new table when
-#'                      no table with same name is available. "Append" appends the given table to the existing
-#'                      one, and creates a new table if not existing. "Overwrite" overwrites the original table
-#'                      if existing, and creates a new table if not. Default to "create".
-#' @return TRUE on success, FALSE otherwise
-#' @import RPostgreSQL DBI
-#' @export
-send_to_db <- function(df, table_name, schema_name="public", database_name="zillow_2017_nov",
-                       host_ip="141.142.209.139", action="create"){
-  # Assert that action is valid
-  if(!action %in% c("create", "append", "overwrite")){
-    print("Action must be one of create, append, or overwrite")
-    return(FALSE)
-  }
-  # Initialize return value
-  res <- FALSE
-  # Gets database driver, assuming PostgreSQL database
-  drv <- DBI::dbDriver("PostgreSQL")
-  # Creates a connection to the postgres database
-  # Note that "con" will be used later in each connection to the database
-  con <- RPostgreSQL::dbConnect(drv,
-                                dbname = database_name,
-                                host = host_ip,
-                                port = 5432,
-                                user = "postgres",
-                                password = "bdeep")
-  # Check whether table exists
-  if(!RPostgreSQL::dbExistsTable(con, c(schema_name, table_name))){
-    # if not, create one anyway
-    RPostgreSQL::dbWriteTable(con, c(schema_name, table_name), df, row.names = FALSE)
-    res <- TRUE
-  } else if(action == "create"){
-    # nothing to do
-    print("Target table already exists!")
-  } else if(action == "append"){
-    RPostgreSQL::dbWriteTable(con, c(schema_name, table_name), df, append = TRUE, row.names = FALSE)
-    res <- TRUE
-  } else if(action == "overwrite"){
-    RPostgreSQL::dbWriteTable(con, c(schema_name, table_name), df, overwrite = TRUE, row.names = FALSE)
-    res <- TRUE
-  }
-  # Garbage collection
-  gc()
-  # Close the connection
-  RPostgreSQL::dbDisconnect(con)
-  RPostgreSQL::dbUnloadDriver(drv)
-  # Return
-  return(res)
 }

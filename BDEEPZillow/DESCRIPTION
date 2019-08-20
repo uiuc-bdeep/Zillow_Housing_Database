@@ -1,8 +1,8 @@
-Package: BDEEPdb
-Title: R-Database Connection @ BDEEP
-Version: 0.0.0.9052
+Package: BDEEPdbZillow
+Title: R-Database Connection for Zillow Housing @ BDEEP
+Version: 0.0.0.9990
 Authors@R: person("Yuchen", "Liang", email = "yliang35@illinois.edu", role = c("aut", "cre"))
-Description: This package builds up the connection between the database and R program for data processing.
+Description: This package builds up the connection between the database and R program for zillow housing data.
 Depends: R (>= 3.0.0)
 License: Proprietary license
 Encoding: UTF-8

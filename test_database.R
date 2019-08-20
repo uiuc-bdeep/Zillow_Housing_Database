@@ -11,10 +11,7 @@ gen_query <- function(tnum, st){
   switch(tnum,
          return(paste0("SELECT loadid FROM hedonics_new.", st, "_hedonics_new;")),
          return(paste0("SELECT ", test_columns, " FROM hedonics_new.", st, "_hedonics_new;")),
-         return(paste0("SELECT * FROM hedonics_new.", st, "_hedonics_new FETCH FIRST 100 ROWS ONLY;")),
-         return(""),
-         return(""),
-         return("")
+         return(paste0("SELECT * FROM hedonics_new.", st, "_hedonics_new FETCH FIRST 100 ROWS ONLY;"))
         )
 }
 
@@ -40,9 +37,6 @@ if(test_num < 0 || test_num > NUMBER_OF_TESTS){
   print("1: Select one column")
   print("2: Select multiple columns")
   print("3: Select first 100 rows with all columns")
-  print("4: Select multiple columns restricting county")
-  print("5: Select multiple columns restricting county in a list")
-  print("6: Select multiple columns restricting fips range")
   stop()
 }
 

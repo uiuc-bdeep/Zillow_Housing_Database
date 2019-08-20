@@ -1,4 +1,4 @@
-# This file contains functions for data type converter in transfers between R and databases
+# This file contains a function for data type converter in transfers from database to R
 
 #' db_type_converter
 #' @description This function converts the type to align with the requirement. See requirement online.
@@ -42,11 +42,6 @@ db_type_converter <- function(data, dbname){
     # salespriceamount
     if("salespriceamount" %in% cols)
       data$salespriceamount <- as.double(gsub("[\\$,]", "", data$salespriceamount))
-  } else if (dbname == "infousa_2018"){
-    # # signaturedate
-    # if("FAMILYID" %in% cols) data$FAMILYID <- as.integer(data$FAMILYID)
-    # # signaturedate
-    # if("LOCATIONID" %in% cols) data$LOCATIONID <- as.integer(data$LOCATIONID)
   }
   return(data)
 }
