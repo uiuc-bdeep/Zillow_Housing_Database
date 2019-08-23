@@ -1,11 +1,15 @@
 # BDEEPZillow R package
 
 ## Installation
-First, to install the package, execute the following in R terminal:
+First, to install the package dependencies, execute the following in R terminal:
 ```
 install.packages("devtools", dependencies=T)
 install.packages("DBI")
 install.packages("RPostgreSQL")
+```
+
+Finally, to install (only for the first time) or update the package, use:
+```
 devtools::install_github("uiuc-bdeep/Zillow_Housing_Database/BDEEPZillow")
 ```
 
