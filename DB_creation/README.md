@@ -11,11 +11,14 @@ The creation of database involves 3 steps. First, we need to install the databas
 ## Setup PosgreSQL Engine
 Steps:
 1. Install the latest version of Postgres server and client (9.5 @ BDEEP):
+
     ```
     sudo apt-get update
     sudo apt-get install postgresql postgresql-client postgresql-contrib
     ```
+
 2. Create superuser in PostgreSQL
+
     We need to set new user `postgres` and a password for it, in order to limit administrator privileges. For example, if one wants to manage, create, delete, or insert tables, he/she needs this password.
 
     In the Linux command line, execute:
@@ -30,13 +33,17 @@ Steps:
     and enter the desired password. **Please record your password in case you forget.**
 
     Finally, leave the PostgreSQL environment by typing `\q`.
+
 3. Create corresponding user in UNIX
+
     Previously, we create a new superuser and password in the database. To protect configuration files in the Linux system, we also need to set up a password for the corresponding UNIX user `postgres`. Execute the following in Linux command line:
     ```
     sudo passwd -d postgres
     sudo su postgres -c passwd
     ```
+
 4. Set up Environment
+
     Finally, we will set up our environment such that we can execute native Postgres commands. Type in:
     ```
     sudo vim /etc/bash.bashrc
@@ -49,7 +56,9 @@ Steps:
     ```
     source /etc/bash.bashrc
     ```
+
 5. Restart the Postgres server
+
     When all steps above are finished, restart the database server by executing:
     ```
     sudo service postgresql restart
@@ -72,11 +81,13 @@ To ease the pain of specifying the data type for each Zillow data column, we can
 pg_restore -C -d zillow_2017_nov zillow.dump
 ```
 
-Finally, we exit the current Linux user by `exit`. And we are ready for data insertion!
+Finally, we exit the current Linux user by executing `exit`. And we are ready for data insertion!
 
 
 ## Insert Data
-[zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. For example, if one wants to convert for state AL (state code 01), use command in the current VM:
+[zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. Note that the script assumes that the raw txt files are located at `/home/schadri/share/projects/Zillow_Housing/stores/Zillow_2017_Nov/`. One might want to change this line (& the completionfile log file location) on his/her own VM.
+
+For example, if one wants to convert for state AL (state code 01), use command in the current VM:
 ```
 python3 zillow_txt_to_database.py 01
 ```
