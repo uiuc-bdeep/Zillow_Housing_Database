@@ -8,21 +8,21 @@ Basic pipeline:
     Input        zillow_txt_to_database.py       \        /  package:BDEEPZillow                                              
      Raw        --------------------------->      Postgres   ------------------->     R      ------>    (Further   
      File       --------------------------->      Database   ------------------->    Data    ------>     Processing
-(txt, csv, ...)                                                                                          ...)      
+    (txt)                                                                                          ...)      
 ```
 
-## TXT -> Postgres Database
-[zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. For example, if you want to convert for state AL (state code 01):
+## DB Creation: TXT -> Postgres Database
+[zillow_txt_to_database.py](./DB_creation/zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. For example, if you want to convert for state AL (state code 01):
 ```
 python3 zillow_txt_to_database.py 01
 ```
 
-## In-database Generation
-Next, you can use [zillow_extract_hedonics.py](./zillow_extract_hedonics.py) to convert **the output from the above** to the final hedonics ready for csv conversion. If you still want the raw data, use:
+## DB Operation: Generate Hedonics
+Next, you can use [zillow_extract_hedonics.py](./DB_operations/zillow_extract_hedonics.py) to convert **the output from the above** to the final hedonics ready for csv conversion. If you still want the raw data, use:
 ```
 python3 zillow_extract_hedonics.py 01
 ```
-Otherwise, if the **output from the first script** is no longer needed, add `delete` prompt at the end. This will delete the files created by the first script at last:
+Otherwise, if the output **from the first script** is no longer needed, add `delete` prompt at the end. This will delete the files created by the first script at last:
 ```
 python3 zillow_extract_hedonics.py 01 delete
 ```
