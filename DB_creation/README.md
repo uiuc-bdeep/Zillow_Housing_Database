@@ -85,7 +85,9 @@ Finally, we exit the current Linux user by executing `exit`. And we are ready fo
 
 
 ## Insert Data
-[zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. The assumed raw file location is `/home/schadri/share/projects/Zillow_Housing/stores/Zillow_2017_Nov/`. One might want to change this line (& the completionfile log file location) on his/her own VM.
+[zillow_txt_to_database.py](./zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics.
+
+The assumed raw file location is `/home/schadri/share/projects/Zillow_Housing/stores/Zillow_2017_Nov/`. One might want to change this line (& the completionfile log file location) on his/her own VM.
 
 For example, if one wants to convert for state AL (state code 01), use command in the current VM:
 ```
