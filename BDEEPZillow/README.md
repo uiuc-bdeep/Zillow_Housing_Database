@@ -15,7 +15,7 @@ devtools::install_github("uiuc-bdeep/Zillow_Housing_Database/BDEEPZillow")
 
 In some cases, you might need to restart the server to get rid of all errors and warnings before loading the library. After this, use command to load the BDEEPZillow library.
 ```
-library(BDEEPZillow)
+library(BDEEPdbZillow)
 ```
 
 ## Content
