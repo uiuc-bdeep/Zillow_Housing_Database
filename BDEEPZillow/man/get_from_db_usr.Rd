@@ -4,7 +4,7 @@
 \alias{get_from_db_usr}
 \title{get_from_db_usr}
 \usage{
-get_from_db_usr(query, database_name = "zillow_2017_nov",
+get_from_db_usr(query, database_name = "zillow_2019_sep",
   host_ip = "141.142.209.139")
 }
 \arguments{

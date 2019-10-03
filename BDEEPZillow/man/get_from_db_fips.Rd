@@ -4,8 +4,9 @@
 \alias{get_from_db_fips}
 \title{get_from_db_fips}
 \usage{
-get_from_db_fips(fips, columns = "*", database_name = "zillow_2017_nov",
-  host_ip = "141.142.209.139", append = TRUE)
+get_from_db_fips(fips, columns = "*",
+  database_name = "zillow_2019_sep", host_ip = "141.142.209.139",
+  append = TRUE)
 }
 \arguments{
 \item{fips}{A vector of fips}

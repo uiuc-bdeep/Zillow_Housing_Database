@@ -5,7 +5,7 @@
 \title{get_from_db_state}
 \usage{
 get_from_db_state(states_abbr, columns = "*", max_num_recs = -1,
-  database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
+  database_name = "zillow__sep", host_ip = "141.142.209.139",
   append = TRUE)
 }
 \arguments{

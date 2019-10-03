@@ -5,7 +5,7 @@
 \title{get_from_db_state_county}
 \usage{
 get_from_db_state_county(state_county, columns = "*",
-  database_name = "zillow_2017_nov", host_ip = "141.142.209.139",
+  database_name = "zillow_2019_sep", host_ip = "141.142.209.139",
   append = TRUE)
 }
 \arguments{
