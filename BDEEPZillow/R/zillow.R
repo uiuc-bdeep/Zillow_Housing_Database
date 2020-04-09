@@ -21,7 +21,7 @@
 #'         is appended into one whole data.frame.
 #' @import RPostgreSQL DBI
 #' @export
-get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow__sep",
+get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, database_name="zillow_2017_nov",
                               host_ip="141.142.209.139", append=TRUE){
   # Make sure states_abbr are lower cased
   states_abbr <- tolower(states_abbr)
@@ -101,7 +101,7 @@ get_from_db_state <- function(states_abbr, columns="*", max_num_recs=-1, databas
 #' @return A data.frame including all data from the given state and county
 #' @import RPostgreSQL DBI
 #' @export
-get_from_db_state_county <- function(state_county, columns="*", database_name="zillow_2019_sep",
+get_from_db_state_county <- function(state_county, columns="*", database_name="zillow_2017_nov",
                                      host_ip="141.142.209.139", append=TRUE){
   # Check valid input
   if(nrow(state_county)==0 || ncol(state_county)!=2 || any(nchar(as.character(state_county[,1]))!=2)){
@@ -159,7 +159,7 @@ get_from_db_state_county <- function(state_county, columns="*", database_name="z
 #' @return A data.frame including all data from the given fips.
 #' @import RPostgreSQL DBI
 #' @export
-get_from_db_fips <- function(fips, columns="*", database_name="zillow_2019_sep",
+get_from_db_fips <- function(fips, columns="*", database_name="zillow_2017_nov",
                              host_ip="141.142.209.139", append=TRUE){
   sc <- get_state_county_by_fips(fips)[, c("state","county")]
   return(get_from_db_state_county(sc,
@@ -197,7 +197,7 @@ get_from_db_fips <- function(fips, columns="*", database_name="zillow_2019_sep",
 #' @return A data.frame returned by the given query.
 #' @import RPostgreSQL DBI
 #' @export
-get_from_db_usr <- function(query, database_name="zillow_2019_sep", host_ip="141.142.209.139"){
+get_from_db_usr <- function(query, database_name="zillow_2017_nov", host_ip="141.142.209.139"){
   # Only one query at a time is supported
   if(length(query)>1){
     print("Only one query at a time is supported!")
