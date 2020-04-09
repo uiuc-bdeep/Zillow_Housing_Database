@@ -1,0 +1,110 @@
+---
+title: "BDEEP Zillow Database R Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(BDEEPdbZillow)
+```
+
+get_from_db_fips
+
+
+This function gets a data.frame including all data from the given fips. Use previous function.
+
+Parameters:
+   
+    fips          A vector of fips
+   
+    columns       A vector of column names to export. Default to all columns (i.e. "*").
+   
+    database_name A string indicating the database name
+   
+    host_ip       A string indicating the ip address of the database VM
+  
+    append        If append is true, return a single data.frame with rows appended, otherwise a
+                     list of data.frames from each state.
+                
+```{r}
+data <- get_from_db_fips("10001")
+head(data, n = 5L)
+data <- get_from_db_fips(c("01001","17019"))
+head(data, n = 5L)
+```
+                     
+get_from_db_state
+
+This function gets a list of data.frames from the database, according to the given states (through abbreviation).
+
+Parameters:
+
+    states_abbr   A vector of states abbreviation
+
+    columns       A vector of column names to export. Default to all columns (i.e. "*").
+
+    max_num_recs  An integer indicating the maximum number of records to select, -1 indicating all (by default)
+
+    database_name A string indicating the database name
+
+    host_ip       A string indicating the ip address of the database VM
+
+    append        If append is true, return a single data.frame with rows appended, otherwise a list of data.frames from each state.
+  
+```{r}
+data <- get_from_db_state("sd")
+head(data, n = 5L)
+data <- get_from_db_state("ca",columns=c("rowid","transid"))
+head(data, n = 5L)
+data <- get_from_db_state("sd",max_num_recs=100)
+head(data, n = 5L)
+```
+
+get_from_db_state_county
+
+This function gets a data.frame including all data from the given state abbr. and county.
+
+Parameters:
+
+    state_county  A data.frame with two columns representing state and county name
+
+    columns       A vector of column names to export. Default to all columns (i.e. "*").
+
+    database_name A string indicating the database name
+
+    host_ip       A string indicating the ip address of the database VM
+
+    append        If append is true, return a single data.frame with rows appended, otherwise a list of data.frames from each state.
+    
+```{r}
+table <- get_state_county_by_fips("01001")[, c("state","county")]
+data <- get_from_db_state_county(table)
+head(data, n = 5L)
+```
+
+get_from_db_usr
+
+This function gets from database according to a user-specified query.
+
+Parameters:
+
+    query         A string specifying the query sent to database
+
+    database_name A string indicating the database name
+
+    host_ip       A string indicating the ip address of the database VM
+
+```{r}
+data <- get_from_db_usr("SELECT loadid FROM hedonics_new.sd_hedonics_new")
+head(data, n = 5L)
+```

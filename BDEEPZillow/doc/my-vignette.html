@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>BDEEP Zillow Database R Package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">BDEEP Zillow Database R Package</h1>
+
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BDEEPdbZillow)</code></pre></div>
+<p>get_from_db_fips</p>
+<p>This function gets a data.frame including all data from the given fips. Use previous function.</p>
+<p>Parameters:</p>
+<pre><code>fips          A vector of fips
+
+columns       A vector of column names to export. Default to all columns (i.e. &quot;*&quot;).
+
+database_name A string indicating the database name
+
+host_ip       A string indicating the ip address of the database VM
+
+append        If append is true, return a single data.frame with rows appended, otherwise a
+                 list of data.frames from each state.
+            </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">get_from_db_fips</span>(<span class="st">&quot;10001&quot;</span>)
+<span class="co">#&gt; [1] &quot;Processing state DE county KENT&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid importparcelid     loadid  fips</span>
+<span class="co">#&gt; 1 ba28d8c2-44d9-e611-80cb-3863bb43ac66       25434765 3454571198 10001</span>
+<span class="co">#&gt; 2 de03dac2-44d9-e611-80cb-3863bb43ac66       25434766 3454571199 10001</span>
+<span class="co">#&gt; 3 b1a5d5c2-44d9-e611-80cb-3863bb43ac66       25434767 3454571200 10001</span>
+<span class="co">#&gt; 4 9315dac2-44d9-e611-80cb-3863bb43ac66       25434769 3454571202 10001</span>
+<span class="co">#&gt; 5 9315dac2-44d9-e611-80cb-3863bb43ac66       25434769 3454571202 10001</span>
+<span class="co">#&gt;   state county propertyfullstreetaddress propertyhousenumber</span>
+<span class="co">#&gt; 1    DE   KENT        2873 LIGHTHOUSE RD                2873</span>
+<span class="co">#&gt; 2    DE   KENT 5250 HAY POINT LANDING RD                5250</span>
+<span class="co">#&gt; 3    DE   KENT 5312 HAY POINT LANDING RD                5312</span>
+<span class="co">#&gt; 4    DE   KENT        2407 LIGHTHOUSE RD                2407</span>
+<span class="co">#&gt; 5    DE   KENT        2407 LIGHTHOUSE RD                2407</span>
+<span class="co">#&gt;   propertyhousenumberext propertystreetpredirectional propertystreetname</span>
+<span class="co">#&gt; 1                   &lt;NA&gt;                         &lt;NA&gt;         LIGHTHOUSE</span>
+<span class="co">#&gt; 2                   &lt;NA&gt;                         &lt;NA&gt;  HAY POINT LANDING</span>
+<span class="co">#&gt; 3                   &lt;NA&gt;                         &lt;NA&gt;  HAY POINT LANDING</span>
+<span class="co">#&gt; 4                   &lt;NA&gt;                         &lt;NA&gt;         LIGHTHOUSE</span>
+<span class="co">#&gt; 5                   &lt;NA&gt;                         &lt;NA&gt;         LIGHTHOUSE</span>
+<span class="co">#&gt;   propertystreetsuffix propertystreetpostdirectional propertycity</span>
+<span class="co">#&gt; 1                   RD                          &lt;NA&gt;       SMYRNA</span>
+<span class="co">#&gt; 2                   RD                          &lt;NA&gt;       SMYRNA</span>
+<span class="co">#&gt; 3                   RD                          &lt;NA&gt;       SMYRNA</span>
+<span class="co">#&gt; 4                   RD                          &lt;NA&gt;       SMYRNA</span>
+<span class="co">#&gt; 5                   RD                          &lt;NA&gt;       SMYRNA</span>
+<span class="co">#&gt;   propertystate propertyzip propertybuildingnumber</span>
+<span class="co">#&gt; 1            DE       19977                   &lt;NA&gt;</span>
+<span class="co">#&gt; 2            DE       19977                   &lt;NA&gt;</span>
+<span class="co">#&gt; 3            DE       19977                   &lt;NA&gt;</span>
+<span class="co">#&gt; 4            DE       19977                   &lt;NA&gt;</span>
+<span class="co">#&gt; 5            DE       19977                   &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressunitdesignator propertyaddressunitnumber</span>
+<span class="co">#&gt; 1                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddresslatitude propertyaddresslongitude</span>
+<span class="co">#&gt; 1                39.33689                -75.52796</span>
+<span class="co">#&gt; 2                39.33360                -75.52769</span>
+<span class="co">#&gt; 3                39.33358                -75.52870</span>
+<span class="co">#&gt; 4                39.32882                -75.53135</span>
+<span class="co">#&gt; 5                39.32882                -75.53135</span>
+<span class="co">#&gt;   propertyaddresscensustractandblock noofbuildings lotsizeacres</span>
+<span class="co">#&gt; 1                          100010432             2        34.50</span>
+<span class="co">#&gt; 2                          100010432             1         4.30</span>
+<span class="co">#&gt; 3                          100010432             1         1.00</span>
+<span class="co">#&gt; 4                          100010402             1        28.89</span>
+<span class="co">#&gt; 5                          100010402             1        28.89</span>
+<span class="co">#&gt;   lotsizesquarefeet taxamount taxyear noofunits</span>
+<span class="co">#&gt; 1           1502820    910.77    2016         0</span>
+<span class="co">#&gt; 2            187308    766.83    2016         0</span>
+<span class="co">#&gt; 3             43560    334.46    2016         0</span>
+<span class="co">#&gt; 4           1258448   1508.95    2016         0</span>
+<span class="co">#&gt; 5           1258448   1508.95    2016         0</span>
+<span class="co">#&gt;   buildingorimprovementnumber yearbuilt effectiveyearbuilt yearremodeled</span>
+<span class="co">#&gt; 1                           1      1900                 NA            NA</span>
+<span class="co">#&gt; 2                           1      1960                 NA            NA</span>
+<span class="co">#&gt; 3                           1      1980                 NA            NA</span>
+<span class="co">#&gt; 4                           1      1986                 NA            NA</span>
+<span class="co">#&gt; 5                           1      1986                 NA            NA</span>
+<span class="co">#&gt;   noofstories storytypestndcode totalrooms totalbedrooms fullbath</span>
+<span class="co">#&gt; 1        2.00               BMT          4             2        1</span>
+<span class="co">#&gt; 2        1.00               BMT          5             2        1</span>
+<span class="co">#&gt; 3        1.00               BMT          3             2        2</span>
+<span class="co">#&gt; 4        1.75              &lt;NA&gt;          6             3        1</span>
+<span class="co">#&gt; 5        1.75              &lt;NA&gt;          6             3        1</span>
+<span class="co">#&gt;   threequarterbath halfbath quarterbath heatingtypeorsystemstndcode</span>
+<span class="co">#&gt; 1               NA        0          NA                         CE </span>
+<span class="co">#&gt; 2               NA        0          NA                         CE </span>
+<span class="co">#&gt; 3               NA        0          NA                         CE </span>
+<span class="co">#&gt; 4               NA        1          NA                         CE </span>
+<span class="co">#&gt; 5               NA        1          NA                         CE </span>
+<span class="co">#&gt;   propertylandusestndcode waterstndcode buildingareasequencenumber</span>
+<span class="co">#&gt; 1                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 2                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 3                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 4                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 5                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt;   buildingareastndcode buildingareasqft batchid   transid</span>
+<span class="co">#&gt; 1                  BAL              904 2492046 113007816</span>
+<span class="co">#&gt; 2                  BAL             1008 2492046 113056425</span>
+<span class="co">#&gt; 3                  BAL              912 2492046 369815587</span>
+<span class="co">#&gt; 4                  BAL             1960 2492046 113079546</span>
+<span class="co">#&gt; 5                  BAL             1960 2492046 113095796</span>
+<span class="co">#&gt;       assessorparcelnumber unformattedassessorparcelnumber legallotsize</span>
+<span class="co">#&gt; 1 1-00-003.00-01-05.00-000               10000300010500000     34.50 AC</span>
+<span class="co">#&gt; 2 1-00-003.00-01-06.00-000               10000300010600000         &lt;NA&gt;</span>
+<span class="co">#&gt; 3 1-00-003.00-01-06.01-000               10000300010601000      1.00 AC</span>
+<span class="co">#&gt; 4 1-00-003.00-01-08.01-000               10000300010801000         &lt;NA&gt;</span>
+<span class="co">#&gt; 5 1-00-003.00-01-08.01-000               10000300010801000         &lt;NA&gt;</span>
+<span class="co">#&gt;   propertysequencenumber propertyaddressmatchcode</span>
+<span class="co">#&gt; 1                      1                        Y</span>
+<span class="co">#&gt; 2                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3                      1                        Y</span>
+<span class="co">#&gt; 4                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressgeocodematchcode legalsectwnrngmer          legalcity</span>
+<span class="co">#&gt; 1                               Y              &lt;NA&gt;               &lt;NA&gt;</span>
+<span class="co">#&gt; 2                            &lt;NA&gt;              &lt;NA&gt;             SMYRNA</span>
+<span class="co">#&gt; 3                               Y              &lt;NA&gt; DUCK CREEK HUNDRED</span>
+<span class="co">#&gt; 4                            &lt;NA&gt;              &lt;NA&gt;               &lt;NA&gt;</span>
+<span class="co">#&gt; 5                            &lt;NA&gt;              &lt;NA&gt; DUCK CREEK HUNDRED</span>
+<span class="co">#&gt;   bkfspid assessmentrecordmatchflag recordingdate documentdate</span>
+<span class="co">#&gt; 1   45397                         1    2005-02-04   2004-06-29</span>
+<span class="co">#&gt; 2   34464                         1    2005-11-14   2005-11-10</span>
+<span class="co">#&gt; 3   76967                         1    2014-04-30   2014-04-29</span>
+<span class="co">#&gt; 4    4720                         1    2008-02-11   2008-01-28</span>
+<span class="co">#&gt; 5   22108                         1    2011-09-02   2011-08-16</span>
+<span class="co">#&gt;   signaturedate salespriceamountstndcode loanamountstndcode</span>
+<span class="co">#&gt; 1          &lt;NA&gt;                     &lt;NA&gt;                   </span>
+<span class="co">#&gt; 2          &lt;NA&gt;                                        &lt;NA&gt;</span>
+<span class="co">#&gt; 3          &lt;NA&gt;                       RD                   </span>
+<span class="co">#&gt; 4          &lt;NA&gt;                                        &lt;NA&gt;</span>
+<span class="co">#&gt; 5          &lt;NA&gt;                                        &lt;NA&gt;</span>
+<span class="co">#&gt;   dataclassstndcode partialinteresttransferstndcode salespriceamount</span>
+<span class="co">#&gt; 1                 D                            &lt;NA&gt;                0</span>
+<span class="co">#&gt; 2                 M                                               NA</span>
+<span class="co">#&gt; 3                 D                            &lt;NA&gt;            50000</span>
+<span class="co">#&gt; 4                 M                                               NA</span>
+<span class="co">#&gt; 5                 M                                               NA</span>
+<span class="co">#&gt;   intrafamilytransferflag transfertaxexemptflag</span>
+<span class="co">#&gt; 1                    &lt;NA&gt;                  &lt;NA&gt;</span>
+<span class="co">#&gt; 2                    &lt;NA&gt;                  &lt;NA&gt;</span>
+<span class="co">#&gt; 3                    &lt;NA&gt;                  &lt;NA&gt;</span>
+<span class="co">#&gt; 4                    &lt;NA&gt;                  &lt;NA&gt;</span>
+<span class="co">#&gt; 5                    &lt;NA&gt;                  &lt;NA&gt;</span>
+data &lt;-<span class="st"> </span><span class="kw">get_from_db_fips</span>(<span class="kw">c</span>(<span class="st">&quot;01001&quot;</span>,<span class="st">&quot;17019&quot;</span>))
+<span class="co">#&gt; [1] &quot;Processing state AL county AUTAUGA&quot;</span>
+<span class="co">#&gt; [1] &quot;Processing state IL county CHAMPAIGN&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid importparcelid     loadid fips</span>
+<span class="co">#&gt; 1 77ff9071-8642-e711-80c2-3863bb43e813              8 3362137594 1001</span>
+<span class="co">#&gt; 2 0af39071-8642-e711-80c2-3863bb43e813             13 3340736414 1001</span>
+<span class="co">#&gt; 3 b57ff46f-8642-e711-80c2-3863bb43e813             15 3340736416 1001</span>
+<span class="co">#&gt; 4 b57ff46f-8642-e711-80c2-3863bb43e813             15 3340736416 1001</span>
+<span class="co">#&gt; 5 4b77f46f-8642-e711-80c2-3863bb43e813             23 3362137596 1001</span>
+<span class="co">#&gt;   state  county propertyfullstreetaddress propertyhousenumber</span>
+<span class="co">#&gt; 1    AL AUTAUGA              HIGHWAY 31 N                &lt;NA&gt;</span>
+<span class="co">#&gt; 2    AL AUTAUGA      141 COUNTY ROAD 20 W                 141</span>
+<span class="co">#&gt; 3    AL AUTAUGA      137 COUNTY ROAD 20 W                 137</span>
+<span class="co">#&gt; 4    AL AUTAUGA      137 COUNTY ROAD 20 W                 137</span>
+<span class="co">#&gt; 5    AL AUTAUGA      169 COUNTY ROAD 20 W                 169</span>
+<span class="co">#&gt;   propertyhousenumberext propertystreetpredirectional propertystreetname</span>
+<span class="co">#&gt; 1                   &lt;NA&gt;                         &lt;NA&gt;               &lt;NA&gt;</span>
+<span class="co">#&gt; 2                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 3                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 4                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 5                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt;   propertystreetsuffix propertystreetpostdirectional propertycity</span>
+<span class="co">#&gt; 1                 &lt;NA&gt;                          &lt;NA&gt;         &lt;NA&gt;</span>
+<span class="co">#&gt; 2                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 3                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 4                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 5                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt;   propertystate propertyzip propertybuildingnumber</span>
+<span class="co">#&gt; 1          &lt;NA&gt;          NA                   &lt;NA&gt;</span>
+<span class="co">#&gt; 2            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 3            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 4            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 5            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressunitdesignator propertyaddressunitnumber</span>
+<span class="co">#&gt; 1                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5                             #                        00</span>
+<span class="co">#&gt;   propertyaddresslatitude propertyaddresslongitude</span>
+<span class="co">#&gt; 1                32.70362                -86.49487</span>
+<span class="co">#&gt; 2                32.69814                -86.49825</span>
+<span class="co">#&gt; 3                32.69828                -86.49774</span>
+<span class="co">#&gt; 4                32.69828                -86.49774</span>
+<span class="co">#&gt; 5                32.70018                -86.50372</span>
+<span class="co">#&gt;   propertyaddresscensustractandblock noofbuildings lotsizeacres</span>
+<span class="co">#&gt; 1                           10010209             1         16.5</span>
+<span class="co">#&gt; 2                           10010209             1         13.7</span>
+<span class="co">#&gt; 3                           10010209             1          2.0</span>
+<span class="co">#&gt; 4                           10010209             1          2.0</span>
+<span class="co">#&gt; 5                           10010209             1         20.0</span>
+<span class="co">#&gt;   lotsizesquarefeet taxamount taxyear noofunits</span>
+<span class="co">#&gt; 1            718740    403.92    2016         0</span>
+<span class="co">#&gt; 2            596772    309.31    2016         0</span>
+<span class="co">#&gt; 3             87120        NA    2016         0</span>
+<span class="co">#&gt; 4             87120        NA    2016         0</span>
+<span class="co">#&gt; 5            871200    239.22    2016         0</span>
+<span class="co">#&gt;   buildingorimprovementnumber yearbuilt effectiveyearbuilt yearremodeled</span>
+<span class="co">#&gt; 1                           1      1950                 NA            NA</span>
+<span class="co">#&gt; 2                           1      1993                 NA            NA</span>
+<span class="co">#&gt; 3                           1      2000                 NA            NA</span>
+<span class="co">#&gt; 4                           1      2000                 NA            NA</span>
+<span class="co">#&gt; 5                           1      1971                 NA            NA</span>
+<span class="co">#&gt;   noofstories storytypestndcode totalrooms totalbedrooms fullbath</span>
+<span class="co">#&gt; 1           1               BMT          6             0        1</span>
+<span class="co">#&gt; 2           1              &lt;NA&gt;          5             0        2</span>
+<span class="co">#&gt; 3           1              &lt;NA&gt;          7             0        2</span>
+<span class="co">#&gt; 4           1              &lt;NA&gt;          7             0        2</span>
+<span class="co">#&gt; 5           1              &lt;NA&gt;          5             0        1</span>
+<span class="co">#&gt;   threequarterbath halfbath quarterbath heatingtypeorsystemstndcode</span>
+<span class="co">#&gt; 1               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 2               NA        0          NA                         FA </span>
+<span class="co">#&gt; 3               NA        0          NA                         FA </span>
+<span class="co">#&gt; 4               NA        0          NA                         FA </span>
+<span class="co">#&gt; 5               NA        1          NA                         FA </span>
+<span class="co">#&gt;   propertylandusestndcode waterstndcode buildingareasequencenumber</span>
+<span class="co">#&gt; 1                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 2                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 3                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 4                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 5                   RR101            NO                          1</span>
+<span class="co">#&gt;   buildingareastndcode buildingareasqft batchid  transid</span>
+<span class="co">#&gt; 1                  BAL             1021 2260989 26848603</span>
+<span class="co">#&gt; 2                  BAL             1537 2220370 26853029</span>
+<span class="co">#&gt; 3                  BAL             2205 2220370 26840976</span>
+<span class="co">#&gt; 4                  BAL             2205 2220370 26854481</span>
+<span class="co">#&gt; 5                  BAL             1288 2260989 26849211</span>
+<span class="co">#&gt;     assessorparcelnumber unformattedassessorparcelnumber legallotsize</span>
+<span class="co">#&gt; 1 01-04-19-0-000-005.000                0104190000005000     16.50 AC</span>
+<span class="co">#&gt; 2 01-04-19-0-000-007.003                0104190000007003         &lt;NA&gt;</span>
+<span class="co">#&gt; 3 01-04-19-0-000-007.005                0104190000007005      2.00 AC</span>
+<span class="co">#&gt; 4 01-04-19-0-000-007.005                0104190000007005         &lt;NA&gt;</span>
+<span class="co">#&gt; 5 01-04-19-0-000-010.000                0104190000010000     20.00 AC</span>
+<span class="co">#&gt;   propertysequencenumber propertyaddressmatchcode</span>
+<span class="co">#&gt; 1                      1                        N</span>
+<span class="co">#&gt; 2                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3                      1                        Y</span>
+<span class="co">#&gt; 4                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5                      1                        Y</span>
+<span class="co">#&gt;   propertyaddressgeocodematchcode legalsectwnrngmer legalcity bkfspid</span>
+<span class="co">#&gt; 1                               N              &lt;NA&gt;      &lt;NA&gt;   12260</span>
+<span class="co">#&gt; 2                            &lt;NA&gt;              &lt;NA&gt;      &lt;NA&gt;     115</span>
+<span class="co">#&gt; 3                               Y              &lt;NA&gt;      &lt;NA&gt;    7673</span>
+<span class="co">#&gt; 4                            &lt;NA&gt;              &lt;NA&gt;      &lt;NA&gt;    9642</span>
+<span class="co">#&gt; 5                               Y              &lt;NA&gt;      &lt;NA&gt;   12413</span>
+<span class="co">#&gt;   assessmentrecordmatchflag recordingdate documentdate signaturedate</span>
+<span class="co">#&gt; 1                         1    2012-12-03   2012-11-16          &lt;NA&gt;</span>
+<span class="co">#&gt; 2                         1    2008-01-23   2008-01-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 3                         1    2008-07-10   2008-06-09          &lt;NA&gt;</span>
+<span class="co">#&gt; 4                         1    2008-07-10   2008-06-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 5                         1    2013-04-23   2013-04-19          &lt;NA&gt;</span>
+<span class="co">#&gt;   salespriceamountstndcode loanamountstndcode dataclassstndcode</span>
+<span class="co">#&gt; 1                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt; 2                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 3                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt; 4                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 5                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt;   partialinteresttransferstndcode salespriceamount intrafamilytransferflag</span>
+<span class="co">#&gt; 1                            &lt;NA&gt;               10                    &lt;NA&gt;</span>
+<span class="co">#&gt; 2                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 3                            &lt;NA&gt;               10                    &lt;NA&gt;</span>
+<span class="co">#&gt; 4                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 5                            &lt;NA&gt;            45000                    &lt;NA&gt;</span>
+<span class="co">#&gt;   transfertaxexemptflag</span>
+<span class="co">#&gt; 1                  &lt;NA&gt;</span>
+<span class="co">#&gt; 2                  &lt;NA&gt;</span>
+<span class="co">#&gt; 3                  &lt;NA&gt;</span>
+<span class="co">#&gt; 4                  &lt;NA&gt;</span>
+<span class="co">#&gt; 5                  &lt;NA&gt;</span></code></pre></div>
+<p>get_from_db_state</p>
+<p>This function gets a list of data.frames from the database, according to the given states (through abbreviation).</p>
+<p>Parameters:</p>
+<pre><code>states_abbr   A vector of states abbreviation
+
+columns       A vector of column names to export. Default to all columns (i.e. &quot;*&quot;).
+
+max_num_recs  An integer indicating the maximum number of records to select, -1 indicating all (by default)
+
+database_name A string indicating the database name
+
+host_ip       A string indicating the ip address of the database VM
+
+append        If append is true, return a single data.frame with rows appended, otherwise a list of data.frames from each state.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">get_from_db_state</span>(<span class="st">&quot;sd&quot;</span>)
+<span class="co">#&gt; [1] &quot;Processing State: sd&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid importparcelid     loadid  fips</span>
+<span class="co">#&gt; 1 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 2 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 3 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 4 f7c71d81-af71-e711-80c2-3863bb43e813      118958493 3448548771 46005</span>
+<span class="co">#&gt; 5 e1cb1d81-af71-e711-80c2-3863bb43e813      118958494 3448548772 46005</span>
+<span class="co">#&gt;   state county propertyfullstreetaddress propertyhousenumber</span>
+<span class="co">#&gt; 1    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 2    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 3    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 4    SD BEADLE            457 12TH ST SW                 457</span>
+<span class="co">#&gt; 5    SD BEADLE      1188 COLORADO AVE SW                1188</span>
+<span class="co">#&gt;   propertyhousenumberext propertystreetpredirectional propertystreetname</span>
+<span class="co">#&gt; 1                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 2                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 3                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 4                   &lt;NA&gt;                         &lt;NA&gt;               12TH</span>
+<span class="co">#&gt; 5                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt;   propertystreetsuffix propertystreetpostdirectional propertycity</span>
+<span class="co">#&gt; 1                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 2                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 3                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 4                   ST                            SW        HURON</span>
+<span class="co">#&gt; 5                  AVE                            SW        HURON</span>
+<span class="co">#&gt;   propertystate propertyzip propertybuildingnumber</span>
+<span class="co">#&gt; 1            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 2            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 3            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 4            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 5            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressunitdesignator propertyaddressunitnumber</span>
+<span class="co">#&gt; 1                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddresslatitude propertyaddresslongitude</span>
+<span class="co">#&gt; 1                44.35353                -98.22181</span>
+<span class="co">#&gt; 2                44.35353                -98.22181</span>
+<span class="co">#&gt; 3                44.35353                -98.22181</span>
+<span class="co">#&gt; 4                44.35273                -98.22144</span>
+<span class="co">#&gt; 5                44.35284                -98.22182</span>
+<span class="co">#&gt;   propertyaddresscensustractandblock noofbuildings lotsizeacres</span>
+<span class="co">#&gt; 1                          460059570             0            1</span>
+<span class="co">#&gt; 2                          460059570             0            1</span>
+<span class="co">#&gt; 3                          460059570             0            1</span>
+<span class="co">#&gt; 4                          460059570             0            1</span>
+<span class="co">#&gt; 5                          460059570             0            1</span>
+<span class="co">#&gt;   lotsizesquarefeet taxamount taxyear noofunits</span>
+<span class="co">#&gt; 1             43560        NA      NA         0</span>
+<span class="co">#&gt; 2             43560        NA      NA         0</span>
+<span class="co">#&gt; 3             43560        NA      NA         0</span>
+<span class="co">#&gt; 4             43560        NA      NA         0</span>
+<span class="co">#&gt; 5             43560        NA      NA         0</span>
+<span class="co">#&gt;   buildingorimprovementnumber yearbuilt effectiveyearbuilt yearremodeled</span>
+<span class="co">#&gt; 1                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 2                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 3                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 4                           1      1924                 NA            NA</span>
+<span class="co">#&gt; 5                           1      1924                 NA            NA</span>
+<span class="co">#&gt;   noofstories storytypestndcode totalrooms totalbedrooms fullbath</span>
+<span class="co">#&gt; 1          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 2          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 3          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 4          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 5          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt;   threequarterbath halfbath quarterbath heatingtypeorsystemstndcode</span>
+<span class="co">#&gt; 1               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 2               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 3               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 4               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 5               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt;   propertylandusestndcode waterstndcode buildingareasequencenumber</span>
+<span class="co">#&gt; 1                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 2                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 3                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 4                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 5                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt;   buildingareastndcode buildingareasqft batchid   transid</span>
+<span class="co">#&gt; 1                 &lt;NA&gt;               NA      NA 315849827</span>
+<span class="co">#&gt; 2                 &lt;NA&gt;               NA      NA 315849830</span>
+<span class="co">#&gt; 3                 &lt;NA&gt;               NA      NA 315850368</span>
+<span class="co">#&gt; 4                 &lt;NA&gt;               NA      NA 315850609</span>
+<span class="co">#&gt; 5                 &lt;NA&gt;               NA      NA 315847778</span>
+<span class="co">#&gt;   assessorparcelnumber unformattedassessorparcelnumber legallotsize</span>
+<span class="co">#&gt; 1                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 2                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 3                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 4                10004                           10004         &lt;NA&gt;</span>
+<span class="co">#&gt; 5                10005                           10005         &lt;NA&gt;</span>
+<span class="co">#&gt;   propertysequencenumber propertyaddressmatchcode</span>
+<span class="co">#&gt; 1                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 2                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 4                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressgeocodematchcode legalsectwnrngmer legalcity bkfspid</span>
+<span class="co">#&gt; 1                            &lt;NA&gt;              &lt;NA&gt;     HURON    3223</span>
+<span class="co">#&gt; 2                            &lt;NA&gt;              &lt;NA&gt;     HURON    3226</span>
+<span class="co">#&gt; 3                            &lt;NA&gt;              &lt;NA&gt;     HURON    3764</span>
+<span class="co">#&gt; 4                            &lt;NA&gt;              &lt;NA&gt;     HURON    4005</span>
+<span class="co">#&gt; 5                            &lt;NA&gt;              &lt;NA&gt;     HURON    1174</span>
+<span class="co">#&gt;   assessmentrecordmatchflag recordingdate documentdate signaturedate</span>
+<span class="co">#&gt; 1                         1    2012-01-18   2011-12-13          &lt;NA&gt;</span>
+<span class="co">#&gt; 2                         1    2012-01-18   2012-01-11          &lt;NA&gt;</span>
+<span class="co">#&gt; 3                         1    2012-08-02   2012-07-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 4                         1    2012-11-13   2012-11-09          &lt;NA&gt;</span>
+<span class="co">#&gt; 5                         1    2009-11-02   2009-06-01          &lt;NA&gt;</span>
+<span class="co">#&gt;   salespriceamountstndcode loanamountstndcode dataclassstndcode</span>
+<span class="co">#&gt; 1                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 2                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 3                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 4                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 5                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt;   partialinteresttransferstndcode salespriceamount intrafamilytransferflag</span>
+<span class="co">#&gt; 1                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 2                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 3                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 4                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 5                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt;   transfertaxexemptflag</span>
+<span class="co">#&gt; 1                  &lt;NA&gt;</span>
+<span class="co">#&gt; 2                  &lt;NA&gt;</span>
+<span class="co">#&gt; 3                  &lt;NA&gt;</span>
+<span class="co">#&gt; 4                  &lt;NA&gt;</span>
+<span class="co">#&gt; 5                  &lt;NA&gt;</span>
+data &lt;-<span class="st"> </span><span class="kw">get_from_db_state</span>(<span class="st">&quot;ca&quot;</span>,<span class="dt">columns=</span><span class="kw">c</span>(<span class="st">&quot;rowid&quot;</span>,<span class="st">&quot;transid&quot;</span>))
+<span class="co">#&gt; [1] &quot;Processing State: ca&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid transid</span>
+<span class="co">#&gt; 1 14f1c1f6-8979-e711-80c2-3863bb43e813 1174969</span>
+<span class="co">#&gt; 2 14f1c1f6-8979-e711-80c2-3863bb43e813 1391589</span>
+<span class="co">#&gt; 3 14f1c1f6-8979-e711-80c2-3863bb43e813 1174968</span>
+<span class="co">#&gt; 4 14f1c1f6-8979-e711-80c2-3863bb43e813 1376081</span>
+<span class="co">#&gt; 5 14f1c1f6-8979-e711-80c2-3863bb43e813 1326262</span>
+data &lt;-<span class="st"> </span><span class="kw">get_from_db_state</span>(<span class="st">&quot;sd&quot;</span>,<span class="dt">max_num_recs=</span><span class="dv">100</span>)
+<span class="co">#&gt; [1] &quot;Processing State: sd&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid importparcelid     loadid  fips</span>
+<span class="co">#&gt; 1 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 2 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 3 b6c91d81-af71-e711-80c2-3863bb43e813      118958490 3448548768 46005</span>
+<span class="co">#&gt; 4 f7c71d81-af71-e711-80c2-3863bb43e813      118958493 3448548771 46005</span>
+<span class="co">#&gt; 5 e1cb1d81-af71-e711-80c2-3863bb43e813      118958494 3448548772 46005</span>
+<span class="co">#&gt;   state county propertyfullstreetaddress propertyhousenumber</span>
+<span class="co">#&gt; 1    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 2    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 3    SD BEADLE      1120 COLORADO AVE SW                1120</span>
+<span class="co">#&gt; 4    SD BEADLE            457 12TH ST SW                 457</span>
+<span class="co">#&gt; 5    SD BEADLE      1188 COLORADO AVE SW                1188</span>
+<span class="co">#&gt;   propertyhousenumberext propertystreetpredirectional propertystreetname</span>
+<span class="co">#&gt; 1                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 2                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 3                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt; 4                   &lt;NA&gt;                         &lt;NA&gt;               12TH</span>
+<span class="co">#&gt; 5                   &lt;NA&gt;                         &lt;NA&gt;           COLORADO</span>
+<span class="co">#&gt;   propertystreetsuffix propertystreetpostdirectional propertycity</span>
+<span class="co">#&gt; 1                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 2                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 3                  AVE                            SW        HURON</span>
+<span class="co">#&gt; 4                   ST                            SW        HURON</span>
+<span class="co">#&gt; 5                  AVE                            SW        HURON</span>
+<span class="co">#&gt;   propertystate propertyzip propertybuildingnumber</span>
+<span class="co">#&gt; 1            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 2            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 3            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 4            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt; 5            SD       57350                   &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressunitdesignator propertyaddressunitnumber</span>
+<span class="co">#&gt; 1                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddresslatitude propertyaddresslongitude</span>
+<span class="co">#&gt; 1                44.35353                -98.22181</span>
+<span class="co">#&gt; 2                44.35353                -98.22181</span>
+<span class="co">#&gt; 3                44.35353                -98.22181</span>
+<span class="co">#&gt; 4                44.35273                -98.22144</span>
+<span class="co">#&gt; 5                44.35284                -98.22182</span>
+<span class="co">#&gt;   propertyaddresscensustractandblock noofbuildings lotsizeacres</span>
+<span class="co">#&gt; 1                          460059570             0            1</span>
+<span class="co">#&gt; 2                          460059570             0            1</span>
+<span class="co">#&gt; 3                          460059570             0            1</span>
+<span class="co">#&gt; 4                          460059570             0            1</span>
+<span class="co">#&gt; 5                          460059570             0            1</span>
+<span class="co">#&gt;   lotsizesquarefeet taxamount taxyear noofunits</span>
+<span class="co">#&gt; 1             43560        NA      NA         0</span>
+<span class="co">#&gt; 2             43560        NA      NA         0</span>
+<span class="co">#&gt; 3             43560        NA      NA         0</span>
+<span class="co">#&gt; 4             43560        NA      NA         0</span>
+<span class="co">#&gt; 5             43560        NA      NA         0</span>
+<span class="co">#&gt;   buildingorimprovementnumber yearbuilt effectiveyearbuilt yearremodeled</span>
+<span class="co">#&gt; 1                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 2                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 3                           1        NA                 NA            NA</span>
+<span class="co">#&gt; 4                           1      1924                 NA            NA</span>
+<span class="co">#&gt; 5                           1      1924                 NA            NA</span>
+<span class="co">#&gt;   noofstories storytypestndcode totalrooms totalbedrooms fullbath</span>
+<span class="co">#&gt; 1          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 2          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 3          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 4          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt; 5          NA              &lt;NA&gt;          0             0        0</span>
+<span class="co">#&gt;   threequarterbath halfbath quarterbath heatingtypeorsystemstndcode</span>
+<span class="co">#&gt; 1               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 2               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 3               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 4               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 5               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt;   propertylandusestndcode waterstndcode buildingareasequencenumber</span>
+<span class="co">#&gt; 1                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 2                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 3                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 4                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt; 5                   RR101          &lt;NA&gt;                         NA</span>
+<span class="co">#&gt;   buildingareastndcode buildingareasqft batchid   transid</span>
+<span class="co">#&gt; 1                 &lt;NA&gt;               NA      NA 315849827</span>
+<span class="co">#&gt; 2                 &lt;NA&gt;               NA      NA 315849830</span>
+<span class="co">#&gt; 3                 &lt;NA&gt;               NA      NA 315850368</span>
+<span class="co">#&gt; 4                 &lt;NA&gt;               NA      NA 315850609</span>
+<span class="co">#&gt; 5                 &lt;NA&gt;               NA      NA 315847778</span>
+<span class="co">#&gt;   assessorparcelnumber unformattedassessorparcelnumber legallotsize</span>
+<span class="co">#&gt; 1                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 2                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 3                10001                           10001         &lt;NA&gt;</span>
+<span class="co">#&gt; 4                10004                           10004         &lt;NA&gt;</span>
+<span class="co">#&gt; 5                10005                           10005         &lt;NA&gt;</span>
+<span class="co">#&gt;   propertysequencenumber propertyaddressmatchcode</span>
+<span class="co">#&gt; 1                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 2                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 4                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressgeocodematchcode legalsectwnrngmer legalcity bkfspid</span>
+<span class="co">#&gt; 1                            &lt;NA&gt;              &lt;NA&gt;     HURON    3223</span>
+<span class="co">#&gt; 2                            &lt;NA&gt;              &lt;NA&gt;     HURON    3226</span>
+<span class="co">#&gt; 3                            &lt;NA&gt;              &lt;NA&gt;     HURON    3764</span>
+<span class="co">#&gt; 4                            &lt;NA&gt;              &lt;NA&gt;     HURON    4005</span>
+<span class="co">#&gt; 5                            &lt;NA&gt;              &lt;NA&gt;     HURON    1174</span>
+<span class="co">#&gt;   assessmentrecordmatchflag recordingdate documentdate signaturedate</span>
+<span class="co">#&gt; 1                         1    2012-01-18   2011-12-13          &lt;NA&gt;</span>
+<span class="co">#&gt; 2                         1    2012-01-18   2012-01-11          &lt;NA&gt;</span>
+<span class="co">#&gt; 3                         1    2012-08-02   2012-07-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 4                         1    2012-11-13   2012-11-09          &lt;NA&gt;</span>
+<span class="co">#&gt; 5                         1    2009-11-02   2009-06-01          &lt;NA&gt;</span>
+<span class="co">#&gt;   salespriceamountstndcode loanamountstndcode dataclassstndcode</span>
+<span class="co">#&gt; 1                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 2                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 3                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 4                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 5                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt;   partialinteresttransferstndcode salespriceamount intrafamilytransferflag</span>
+<span class="co">#&gt; 1                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 2                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 3                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 4                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 5                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt;   transfertaxexemptflag</span>
+<span class="co">#&gt; 1                  &lt;NA&gt;</span>
+<span class="co">#&gt; 2                  &lt;NA&gt;</span>
+<span class="co">#&gt; 3                  &lt;NA&gt;</span>
+<span class="co">#&gt; 4                  &lt;NA&gt;</span>
+<span class="co">#&gt; 5                  &lt;NA&gt;</span></code></pre></div>
+<p>get_from_db_state_county</p>
+<p>This function gets a data.frame including all data from the given state abbr. and county.</p>
+<p>Parameters:</p>
+<pre><code>state_county  A data.frame with two columns representing state and county name
+
+columns       A vector of column names to export. Default to all columns (i.e. &quot;*&quot;).
+
+database_name A string indicating the database name
+
+host_ip       A string indicating the ip address of the database VM
+
+append        If append is true, return a single data.frame with rows appended, otherwise a list of data.frames from each state.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table &lt;-<span class="st"> </span><span class="kw">get_state_county_by_fips</span>(<span class="st">&quot;01001&quot;</span>)[, <span class="kw">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;county&quot;</span>)]
+data &lt;-<span class="st"> </span><span class="kw">get_from_db_state_county</span>(table)
+<span class="co">#&gt; [1] &quot;Processing state AL county AUTAUGA&quot;</span>
+<span class="co">#&gt; [1] &quot;Finished!&quot;</span>
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;                                  rowid importparcelid     loadid fips</span>
+<span class="co">#&gt; 1 77ff9071-8642-e711-80c2-3863bb43e813              8 3362137594 1001</span>
+<span class="co">#&gt; 2 0af39071-8642-e711-80c2-3863bb43e813             13 3340736414 1001</span>
+<span class="co">#&gt; 3 b57ff46f-8642-e711-80c2-3863bb43e813             15 3340736416 1001</span>
+<span class="co">#&gt; 4 b57ff46f-8642-e711-80c2-3863bb43e813             15 3340736416 1001</span>
+<span class="co">#&gt; 5 4b77f46f-8642-e711-80c2-3863bb43e813             23 3362137596 1001</span>
+<span class="co">#&gt;   state  county propertyfullstreetaddress propertyhousenumber</span>
+<span class="co">#&gt; 1    AL AUTAUGA              HIGHWAY 31 N                &lt;NA&gt;</span>
+<span class="co">#&gt; 2    AL AUTAUGA      141 COUNTY ROAD 20 W                 141</span>
+<span class="co">#&gt; 3    AL AUTAUGA      137 COUNTY ROAD 20 W                 137</span>
+<span class="co">#&gt; 4    AL AUTAUGA      137 COUNTY ROAD 20 W                 137</span>
+<span class="co">#&gt; 5    AL AUTAUGA      169 COUNTY ROAD 20 W                 169</span>
+<span class="co">#&gt;   propertyhousenumberext propertystreetpredirectional propertystreetname</span>
+<span class="co">#&gt; 1                   &lt;NA&gt;                         &lt;NA&gt;               &lt;NA&gt;</span>
+<span class="co">#&gt; 2                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 3                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 4                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt; 5                   &lt;NA&gt;                         &lt;NA&gt;     COUNTY ROAD 20</span>
+<span class="co">#&gt;   propertystreetsuffix propertystreetpostdirectional propertycity</span>
+<span class="co">#&gt; 1                 &lt;NA&gt;                          &lt;NA&gt;         &lt;NA&gt;</span>
+<span class="co">#&gt; 2                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 3                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 4                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt; 5                 &lt;NA&gt;                            W       MARBURY</span>
+<span class="co">#&gt;   propertystate propertyzip propertybuildingnumber</span>
+<span class="co">#&gt; 1          &lt;NA&gt;          NA                   &lt;NA&gt;</span>
+<span class="co">#&gt; 2            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 3            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 4            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt; 5            AL       36051                   &lt;NA&gt;</span>
+<span class="co">#&gt;   propertyaddressunitdesignator propertyaddressunitnumber</span>
+<span class="co">#&gt; 1                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4                          &lt;NA&gt;                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5                             #                        00</span>
+<span class="co">#&gt;   propertyaddresslatitude propertyaddresslongitude</span>
+<span class="co">#&gt; 1                32.70362                -86.49487</span>
+<span class="co">#&gt; 2                32.69814                -86.49825</span>
+<span class="co">#&gt; 3                32.69828                -86.49774</span>
+<span class="co">#&gt; 4                32.69828                -86.49774</span>
+<span class="co">#&gt; 5                32.70018                -86.50372</span>
+<span class="co">#&gt;   propertyaddresscensustractandblock noofbuildings lotsizeacres</span>
+<span class="co">#&gt; 1                           10010209             1         16.5</span>
+<span class="co">#&gt; 2                           10010209             1         13.7</span>
+<span class="co">#&gt; 3                           10010209             1          2.0</span>
+<span class="co">#&gt; 4                           10010209             1          2.0</span>
+<span class="co">#&gt; 5                           10010209             1         20.0</span>
+<span class="co">#&gt;   lotsizesquarefeet taxamount taxyear noofunits</span>
+<span class="co">#&gt; 1            718740    403.92    2016         0</span>
+<span class="co">#&gt; 2            596772    309.31    2016         0</span>
+<span class="co">#&gt; 3             87120        NA    2016         0</span>
+<span class="co">#&gt; 4             87120        NA    2016         0</span>
+<span class="co">#&gt; 5            871200    239.22    2016         0</span>
+<span class="co">#&gt;   buildingorimprovementnumber yearbuilt effectiveyearbuilt yearremodeled</span>
+<span class="co">#&gt; 1                           1      1950                 NA            NA</span>
+<span class="co">#&gt; 2                           1      1993                 NA            NA</span>
+<span class="co">#&gt; 3                           1      2000                 NA            NA</span>
+<span class="co">#&gt; 4                           1      2000                 NA            NA</span>
+<span class="co">#&gt; 5                           1      1971                 NA            NA</span>
+<span class="co">#&gt;   noofstories storytypestndcode totalrooms totalbedrooms fullbath</span>
+<span class="co">#&gt; 1           1               BMT          6             0        1</span>
+<span class="co">#&gt; 2           1              &lt;NA&gt;          5             0        2</span>
+<span class="co">#&gt; 3           1              &lt;NA&gt;          7             0        2</span>
+<span class="co">#&gt; 4           1              &lt;NA&gt;          7             0        2</span>
+<span class="co">#&gt; 5           1              &lt;NA&gt;          5             0        1</span>
+<span class="co">#&gt;   threequarterbath halfbath quarterbath heatingtypeorsystemstndcode</span>
+<span class="co">#&gt; 1               NA        0          NA                        &lt;NA&gt;</span>
+<span class="co">#&gt; 2               NA        0          NA                         FA </span>
+<span class="co">#&gt; 3               NA        0          NA                         FA </span>
+<span class="co">#&gt; 4               NA        0          NA                         FA </span>
+<span class="co">#&gt; 5               NA        1          NA                         FA </span>
+<span class="co">#&gt;   propertylandusestndcode waterstndcode buildingareasequencenumber</span>
+<span class="co">#&gt; 1                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 2                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 3                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 4                   RR101          &lt;NA&gt;                          1</span>
+<span class="co">#&gt; 5                   RR101            NO                          1</span>
+<span class="co">#&gt;   buildingareastndcode buildingareasqft batchid  transid</span>
+<span class="co">#&gt; 1                  BAL             1021 2260989 26848603</span>
+<span class="co">#&gt; 2                  BAL             1537 2220370 26853029</span>
+<span class="co">#&gt; 3                  BAL             2205 2220370 26840976</span>
+<span class="co">#&gt; 4                  BAL             2205 2220370 26854481</span>
+<span class="co">#&gt; 5                  BAL             1288 2260989 26849211</span>
+<span class="co">#&gt;     assessorparcelnumber unformattedassessorparcelnumber legallotsize</span>
+<span class="co">#&gt; 1 01-04-19-0-000-005.000                0104190000005000     16.50 AC</span>
+<span class="co">#&gt; 2 01-04-19-0-000-007.003                0104190000007003         &lt;NA&gt;</span>
+<span class="co">#&gt; 3 01-04-19-0-000-007.005                0104190000007005      2.00 AC</span>
+<span class="co">#&gt; 4 01-04-19-0-000-007.005                0104190000007005         &lt;NA&gt;</span>
+<span class="co">#&gt; 5 01-04-19-0-000-010.000                0104190000010000     20.00 AC</span>
+<span class="co">#&gt;   propertysequencenumber propertyaddressmatchcode</span>
+<span class="co">#&gt; 1                      1                        N</span>
+<span class="co">#&gt; 2                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3                      1                        Y</span>
+<span class="co">#&gt; 4                      1                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5                      1                        Y</span>
+<span class="co">#&gt;   propertyaddressgeocodematchcode legalsectwnrngmer legalcity bkfspid</span>
+<span class="co">#&gt; 1                               N              &lt;NA&gt;      &lt;NA&gt;   12260</span>
+<span class="co">#&gt; 2                            &lt;NA&gt;              &lt;NA&gt;      &lt;NA&gt;     115</span>
+<span class="co">#&gt; 3                               Y              &lt;NA&gt;      &lt;NA&gt;    7673</span>
+<span class="co">#&gt; 4                            &lt;NA&gt;              &lt;NA&gt;      &lt;NA&gt;    9642</span>
+<span class="co">#&gt; 5                               Y              &lt;NA&gt;      &lt;NA&gt;   12413</span>
+<span class="co">#&gt;   assessmentrecordmatchflag recordingdate documentdate signaturedate</span>
+<span class="co">#&gt; 1                         1    2012-12-03   2012-11-16          &lt;NA&gt;</span>
+<span class="co">#&gt; 2                         1    2008-01-23   2008-01-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 3                         1    2008-07-10   2008-06-09          &lt;NA&gt;</span>
+<span class="co">#&gt; 4                         1    2008-07-10   2008-06-06          &lt;NA&gt;</span>
+<span class="co">#&gt; 5                         1    2013-04-23   2013-04-19          &lt;NA&gt;</span>
+<span class="co">#&gt;   salespriceamountstndcode loanamountstndcode dataclassstndcode</span>
+<span class="co">#&gt; 1                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt; 2                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 3                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt; 4                                        &lt;NA&gt;                 M</span>
+<span class="co">#&gt; 5                     &lt;NA&gt;                                    D</span>
+<span class="co">#&gt;   partialinteresttransferstndcode salespriceamount intrafamilytransferflag</span>
+<span class="co">#&gt; 1                            &lt;NA&gt;               10                    &lt;NA&gt;</span>
+<span class="co">#&gt; 2                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 3                            &lt;NA&gt;               10                    &lt;NA&gt;</span>
+<span class="co">#&gt; 4                                               NA                    &lt;NA&gt;</span>
+<span class="co">#&gt; 5                            &lt;NA&gt;            45000                    &lt;NA&gt;</span>
+<span class="co">#&gt;   transfertaxexemptflag</span>
+<span class="co">#&gt; 1                  &lt;NA&gt;</span>
+<span class="co">#&gt; 2                  &lt;NA&gt;</span>
+<span class="co">#&gt; 3                  &lt;NA&gt;</span>
+<span class="co">#&gt; 4                  &lt;NA&gt;</span>
+<span class="co">#&gt; 5                  &lt;NA&gt;</span></code></pre></div>
+<p>get_from_db_usr</p>
+<p>This function gets from database according to a user-specified query.</p>
+<p>Parameters:</p>
+<pre><code>query         A string specifying the query sent to database
+
+database_name A string indicating the database name
+
+host_ip       A string indicating the ip address of the database VM</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">get_from_db_usr</span>(<span class="st">&quot;SELECT loadid FROM hedonics_new.sd_hedonics_new&quot;</span>)
+<span class="kw">head</span>(data, <span class="dt">n =</span> 5L)
+<span class="co">#&gt;       loadid</span>
+<span class="co">#&gt; 1 3448548768</span>
+<span class="co">#&gt; 2 3448548768</span>
+<span class="co">#&gt; 3 3448548768</span>
+<span class="co">#&gt; 4 3448548771</span>
+<span class="co">#&gt; 5 3448548772</span></code></pre></div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
