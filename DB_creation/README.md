@@ -1,6 +1,6 @@
-# Zillow_Housing_Database Creation
+# Create Zillow_Housing_Database 
 
-The creation of database involves 3 steps. First, we need to install the database on the VM. Then, we need to create the database and tables. Finally, we need to insert the data into the database.
+This tool creates a PostgreSQL database that can be used to query ZTRAX data using the BDEEPdbZillow package.  It involves 3 steps. First, we need to install the database on a virtual machine (VM). Then, we need to create the database and tables. Finally, we need to insert the data into the database.
 
 ## Prerequisite
 - A working Linux VM connected to the internet with root access
