@@ -12,7 +12,7 @@ Basic pipeline:
 ```
 
 ## DB Creation: TXT -> Postgres Database
-[zillow_txt_to_database.py](./DB_creation/zillow_txt_to_database.py) converts Zillow_Housing raw data from txt file to postgresql database hedonics. For example, if you want to convert for state AL (state code 01):
+[zillow_txt_to_database.py](./DB_creation/zillow_txt_to_database.py) converts Zillow_Housing raw data from a txt file to a postgresql database. For example, if you want to convert for state AL (state code 01):
 ```
 python3 zillow_txt_to_database.py 01
 ```
